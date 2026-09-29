@@ -1,0 +1,342 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Mit Vigie verbinden",
+        "description": "Erstellen Sie in Vigie unter Konto → API-Schlüssel einen Schlüssel. Das Leserecht ist Pflicht; Laden, Komfort, Zugang oder Signal erlauben die Steuerung.",
+        "data": {
+          "url": "Vigie-Adresse",
+          "api_key": "API-Schlüssel"
+        },
+        "data_description": {
+          "url": "Standardwert beibehalten, außer bei einer anderen Vigie-Instanz.",
+          "api_key": "Beginnt mit vigie_ (nur einmal beim Erstellen angezeigt)."
+        }
+      },
+      "vehicles": {
+        "title": "Fahrzeuge",
+        "description": "Fahrzeuge für Home Assistant auswählen.",
+        "data": {
+          "vehicles": "Fahrzeuge"
+        }
+      },
+      "reauth_confirm": {
+        "title": "Neuer API-Schlüssel",
+        "description": "Vigie ({url}) lehnt den Schlüssel ab (widerrufen oder abgelaufen). Neuen eingeben.",
+        "data": {
+          "api_key": "API-Schlüssel"
+        }
+      }
+    },
+    "error": {
+      "invalid_auth": "Schlüssel ungültig, abgelaufen oder widerrufen.",
+      "missing_read": "Diesem Schlüssel fehlt das Leserecht.",
+      "cannot_connect": "Vigie ist unter dieser Adresse nicht erreichbar.",
+      "rate_limited": "Zu viele Anfragen. In einer Minute erneut versuchen.",
+      "no_vehicles": "Kein Fahrzeug in diesem Vigie-Konto.",
+      "no_selection": "Mindestens ein Fahrzeug auswählen.",
+      "invalid_url": "Die Adresse muss mit https:// beginnen.",
+      "unknown": "Unerwarteter Fehler."
+    },
+    "abort": {
+      "already_configured": "Dieses Vigie-Konto ist bereits eingerichtet.",
+      "reauth_successful": "Schlüssel aktualisiert.",
+      "wrong_account": "Dieser Schlüssel gehört zu einem anderen Konto: keines der Fahrzeuge ist sichtbar."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Vigie-Optionen",
+        "data": {
+          "scan_interval": "Aktualisierungsintervall",
+          "signal_buttons": "Tasten Hupe und Lichthupe"
+        },
+        "data_description": {
+          "scan_interval": "30 bis 300 Sekunden. Lesezugriffe sind kostenlos; Grenze 60 pro Minute und Schlüssel.",
+          "signal_buttons": "Nur aktivieren, wenn der Schlüssel das Signalrecht hat. Vigie kann es nicht prüfen, ohne zu hupen."
+        }
+      }
+    }
+  },
+  "entity": {
+    "sensor": {
+      "energy_remaining": {
+        "name": "Verfügbare Energie"
+      },
+      "range": {
+        "name": "Reichweite"
+      },
+      "estimated_range": {
+        "name": "Geschätzte Reichweite"
+      },
+      "battery_health": {
+        "name": "Batteriezustand"
+      },
+      "battery_capacity": {
+        "name": "Batteriekapazität"
+      },
+      "battery_cycles": {
+        "name": "Batteriezyklen"
+      },
+      "cell_gap": {
+        "name": "Zellspannungsdifferenz"
+      },
+      "battery_temp_min": {
+        "name": "Batterietemperatur min"
+      },
+      "battery_temp_max": {
+        "name": "Batterietemperatur max"
+      },
+      "pack_voltage": {
+        "name": "Packspannung"
+      },
+      "pack_current": {
+        "name": "Packstrom"
+      },
+      "pack_power": {
+        "name": "Packleistung"
+      },
+      "charging_power": {
+        "name": "Ladeleistung"
+      },
+      "charge_energy_added": {
+        "name": "Geladene Energie"
+      },
+      "last_charge_energy": {
+        "name": "Energie letzte Ladung"
+      },
+      "energy_charged_total": {
+        "name": "Gesamte geladene Energie"
+      },
+      "energy_used_total": {
+        "name": "Gesamter Energieverbrauch"
+      },
+      "charge_state": {
+        "name": "Ladezustand",
+        "state": {
+          "disconnected": "Nicht eingesteckt",
+          "no_power": "Kein Strom",
+          "starting": "Startet",
+          "charging": "Lädt",
+          "complete": "Abgeschlossen",
+          "stopped": "Gestoppt",
+          "unknown": "Unbekannt"
+        }
+      },
+      "charge_limit": {
+        "name": "Ladelimit"
+      },
+      "charge_current": {
+        "name": "Ladestrom"
+      },
+      "odometer": {
+        "name": "Kilometerstand"
+      },
+      "inside_temperature": {
+        "name": "Innentemperatur"
+      },
+      "outside_temperature": {
+        "name": "Außentemperatur"
+      },
+      "tyre_pressure_front_left": {
+        "name": "Reifendruck vorne links"
+      },
+      "tyre_pressure_front_right": {
+        "name": "Reifendruck vorne rechts"
+      },
+      "tyre_pressure_rear_left": {
+        "name": "Reifendruck hinten links"
+      },
+      "tyre_pressure_rear_right": {
+        "name": "Reifendruck hinten rechts"
+      },
+      "last_seen": {
+        "name": "Letzter Datenempfang"
+      }
+    },
+    "binary_sensor": {
+      "online": {
+        "name": "Online"
+      },
+      "charging": {
+        "name": "Lädt"
+      },
+      "plugged_in": {
+        "name": "Eingesteckt"
+      },
+      "charge_port_door": {
+        "name": "Ladeklappe"
+      },
+      "fast_charger": {
+        "name": "Schnelllader"
+      },
+      "battery_heater": {
+        "name": "Batterieheizung"
+      },
+      "locked": {
+        "name": "Verriegelung"
+      },
+      "doors": {
+        "name": "Türen"
+      },
+      "frunk": {
+        "name": "Frunk"
+      },
+      "trunk": {
+        "name": "Kofferraum"
+      },
+      "windows": {
+        "name": "Fenster"
+      },
+      "sentry": {
+        "name": "Wächter-Modus"
+      },
+      "climate": {
+        "name": "Klimaanlage"
+      },
+      "tyre_warning": {
+        "name": "Reifendruckwarnung"
+      }
+    },
+    "device_tracker": {
+      "location": {
+        "name": "Standort"
+      }
+    },
+    "switch": {
+      "charge": {
+        "name": "Laden"
+      },
+      "sentry_mode": {
+        "name": "Wächter-Modus"
+      },
+      "steering_wheel_heater": {
+        "name": "Lenkradheizung"
+      }
+    },
+    "number": {
+      "charge_limit": {
+        "name": "Ladelimit"
+      },
+      "charge_current": {
+        "name": "Ladestrom"
+      }
+    },
+    "climate": {
+      "climate": {
+        "name": "Klimaanlage"
+      }
+    },
+    "lock": {
+      "lock": {
+        "name": "Türen"
+      }
+    },
+    "button": {
+      "open_frunk": {
+        "name": "Frunk öffnen"
+      },
+      "actuate_trunk": {
+        "name": "Kofferraum öffnen oder schließen"
+      },
+      "honk": {
+        "name": "Hupen"
+      },
+      "flash_lights": {
+        "name": "Lichthupe"
+      },
+      "wake": {
+        "name": "Aufwecken"
+      }
+    },
+    "select": {
+      "seat_heater_left": {
+        "name": "Sitzheizung Fahrer",
+        "state": {
+          "off": "Aus",
+          "low": "Niedrig",
+          "medium": "Mittel",
+          "high": "Hoch"
+        }
+      },
+      "seat_heater_right": {
+        "name": "Sitzheizung Beifahrer",
+        "state": {
+          "off": "Aus",
+          "low": "Niedrig",
+          "medium": "Mittel",
+          "high": "Hoch"
+        }
+      },
+      "seat_heater_rear_left": {
+        "name": "Sitzheizung hinten links",
+        "state": {
+          "off": "Aus",
+          "low": "Niedrig",
+          "medium": "Mittel",
+          "high": "Hoch"
+        }
+      },
+      "seat_heater_rear_center": {
+        "name": "Sitzheizung hinten Mitte",
+        "state": {
+          "off": "Aus",
+          "low": "Niedrig",
+          "medium": "Mittel",
+          "high": "Hoch"
+        }
+      },
+      "seat_heater_rear_right": {
+        "name": "Sitzheizung hinten rechts",
+        "state": {
+          "off": "Aus",
+          "low": "Niedrig",
+          "medium": "Mittel",
+          "high": "Hoch"
+        }
+      }
+    }
+  },
+  "services": {
+    "refresh": {
+      "name": "Aktualisieren",
+      "description": "Liest sofort die neuesten Daten von Vigie. Kostenlos, weckt das Fahrzeug nicht.",
+      "fields": {
+        "device_id": {
+          "name": "Fahrzeuge",
+          "description": "Zu aktualisierende Fahrzeuge. Alle, wenn leer."
+        }
+      }
+    }
+  },
+  "exceptions": {
+    "invalid_auth": {
+      "message": "Vigie lehnt den API-Schlüssel ab."
+    },
+    "rate_limited": {
+      "message": "Vigie-Limit erreicht, gleich erneut versuchen."
+    },
+    "vehicle_not_found": {
+      "message": "Dieses Fahrzeug ist mit diesem Schlüssel nicht mehr sichtbar."
+    },
+    "read_forbidden": {
+      "message": "Der Schlüssel hat kein Leserecht mehr."
+    },
+    "update_failed": {
+      "message": "Vigie ist nicht erreichbar ({error})."
+    },
+    "vehicle_asleep": {
+      "message": "Das Fahrzeug schläft. Zuerst Aufwecken drücken (3 pro Stunde)."
+    },
+    "ability_missing": {
+      "message": "Dem API-Schlüssel fehlt das Recht für diesen Befehl: {message}"
+    },
+    "option_disabled": {
+      "message": "Diese Option ist für das Fahrzeug in Vigie deaktiviert: {message}"
+    },
+    "command_failed": {
+      "message": "Befehl abgelehnt: {message}"
+    }
+  }
+}

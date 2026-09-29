@@ -1,0 +1,3 @@
+{"data": [{"id": 1, "name": "Tessy", "vin_masked": "5YJ••••••••••1234", "key_paired": true,
+  "options": {"location": true, "charge": true, "comfort": true, "access": true, "signal": true},
+  "commands": ["charge_start", "charge_stop", "charge_limit", "charge_amps", "climate_on", "climate_off", "set_temps", "seat_heater", "wheel_heater", "lock", "unlock", "trunk_front", "trunk_rear", "sentry", "honk", "flash"]}]}

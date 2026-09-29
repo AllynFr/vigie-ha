@@ -1,0 +1,8 @@
+refresh:
+  fields:
+    device_id:
+      required: false
+      selector:
+        device:
+          integration: vigie
+          multiple: true

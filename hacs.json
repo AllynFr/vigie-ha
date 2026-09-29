@@ -1,0 +1,6 @@
+{
+  "name": "Vigie",
+  "homeassistant": "2026.2.0",
+  "render_readme": true,
+  "country": ["FR", "BE", "CH", "DE", "ES", "IT", "CN"]
+}

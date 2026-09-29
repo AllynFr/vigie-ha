@@ -1,0 +1,342 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Connessione a Vigie",
+        "description": "Crea una chiave API in Vigie, Account → Chiavi API. Il permesso di lettura è obbligatorio; aggiungi ricarica, comfort, accesso o segnale per comandare l'auto.",
+        "data": {
+          "url": "Indirizzo di Vigie",
+          "api_key": "Chiave API"
+        },
+        "data_description": {
+          "url": "Lascia il valore predefinito, salvo per un'altra istanza di Vigie.",
+          "api_key": "Inizia con vigie_ (mostrata una sola volta alla creazione)."
+        }
+      },
+      "vehicles": {
+        "title": "Auto",
+        "description": "Scegli le auto da aggiungere a Home Assistant.",
+        "data": {
+          "vehicles": "Auto"
+        }
+      },
+      "reauth_confirm": {
+        "title": "Nuova chiave API",
+        "description": "Vigie ({url}) rifiuta la chiave (revocata o scaduta). Inseriscine una nuova.",
+        "data": {
+          "api_key": "Chiave API"
+        }
+      }
+    },
+    "error": {
+      "invalid_auth": "Chiave non valida, scaduta o revocata.",
+      "missing_read": "A questa chiave manca il permesso di lettura.",
+      "cannot_connect": "Vigie non raggiungibile a questo indirizzo.",
+      "rate_limited": "Troppe richieste. Riprova tra un minuto.",
+      "no_vehicles": "Nessuna auto su questo account Vigie.",
+      "no_selection": "Scegli almeno un'auto.",
+      "invalid_url": "L'indirizzo deve iniziare con https://",
+      "unknown": "Errore imprevisto."
+    },
+    "abort": {
+      "already_configured": "Questo account Vigie è già configurato.",
+      "reauth_successful": "Chiave aggiornata.",
+      "wrong_account": "Questa chiave appartiene a un altro account: nessuna delle auto configurate è visibile."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Opzioni di Vigie",
+        "data": {
+          "scan_interval": "Intervallo di aggiornamento",
+          "signal_buttons": "Pulsanti clacson e lampeggio"
+        },
+        "data_description": {
+          "scan_interval": "Da 30 a 300 secondi. Le letture sono gratuite; limite di 60 al minuto per chiave.",
+          "signal_buttons": "Attiva solo se la chiave ha il permesso segnale. Vigie non può verificarlo senza suonare il clacson."
+        }
+      }
+    }
+  },
+  "entity": {
+    "sensor": {
+      "energy_remaining": {
+        "name": "Energia disponibile"
+      },
+      "range": {
+        "name": "Autonomia"
+      },
+      "estimated_range": {
+        "name": "Autonomia stimata"
+      },
+      "battery_health": {
+        "name": "Salute della batteria"
+      },
+      "battery_capacity": {
+        "name": "Capacità della batteria"
+      },
+      "battery_cycles": {
+        "name": "Cicli della batteria"
+      },
+      "cell_gap": {
+        "name": "Scarto tra celle"
+      },
+      "battery_temp_min": {
+        "name": "Temperatura batteria min"
+      },
+      "battery_temp_max": {
+        "name": "Temperatura batteria max"
+      },
+      "pack_voltage": {
+        "name": "Tensione del pacco"
+      },
+      "pack_current": {
+        "name": "Corrente del pacco"
+      },
+      "pack_power": {
+        "name": "Potenza del pacco"
+      },
+      "charging_power": {
+        "name": "Potenza di ricarica"
+      },
+      "charge_energy_added": {
+        "name": "Energia aggiunta"
+      },
+      "last_charge_energy": {
+        "name": "Energia ultima ricarica"
+      },
+      "energy_charged_total": {
+        "name": "Energia caricata totale"
+      },
+      "energy_used_total": {
+        "name": "Energia consumata totale"
+      },
+      "charge_state": {
+        "name": "Stato di ricarica",
+        "state": {
+          "disconnected": "Scollegata",
+          "no_power": "Nessuna corrente",
+          "starting": "Avvio",
+          "charging": "In carica",
+          "complete": "Completata",
+          "stopped": "Interrotta",
+          "unknown": "Sconosciuto"
+        }
+      },
+      "charge_limit": {
+        "name": "Limite di ricarica"
+      },
+      "charge_current": {
+        "name": "Corrente di ricarica"
+      },
+      "odometer": {
+        "name": "Contachilometri"
+      },
+      "inside_temperature": {
+        "name": "Temperatura interna"
+      },
+      "outside_temperature": {
+        "name": "Temperatura esterna"
+      },
+      "tyre_pressure_front_left": {
+        "name": "Pressione pneumatico anteriore sinistro"
+      },
+      "tyre_pressure_front_right": {
+        "name": "Pressione pneumatico anteriore destro"
+      },
+      "tyre_pressure_rear_left": {
+        "name": "Pressione pneumatico posteriore sinistro"
+      },
+      "tyre_pressure_rear_right": {
+        "name": "Pressione pneumatico posteriore destro"
+      },
+      "last_seen": {
+        "name": "Ultima ricezione"
+      }
+    },
+    "binary_sensor": {
+      "online": {
+        "name": "Online"
+      },
+      "charging": {
+        "name": "In carica"
+      },
+      "plugged_in": {
+        "name": "Collegata"
+      },
+      "charge_port_door": {
+        "name": "Sportello di ricarica"
+      },
+      "fast_charger": {
+        "name": "Colonnina rapida"
+      },
+      "battery_heater": {
+        "name": "Riscaldamento batteria"
+      },
+      "locked": {
+        "name": "Chiusura"
+      },
+      "doors": {
+        "name": "Portiere"
+      },
+      "frunk": {
+        "name": "Bagagliaio anteriore"
+      },
+      "trunk": {
+        "name": "Bagagliaio"
+      },
+      "windows": {
+        "name": "Finestrini"
+      },
+      "sentry": {
+        "name": "Modalità Sentinella"
+      },
+      "climate": {
+        "name": "Climatizzazione"
+      },
+      "tyre_warning": {
+        "name": "Avviso pressione pneumatici"
+      }
+    },
+    "device_tracker": {
+      "location": {
+        "name": "Posizione"
+      }
+    },
+    "switch": {
+      "charge": {
+        "name": "Ricarica"
+      },
+      "sentry_mode": {
+        "name": "Modalità Sentinella"
+      },
+      "steering_wheel_heater": {
+        "name": "Volante riscaldato"
+      }
+    },
+    "number": {
+      "charge_limit": {
+        "name": "Limite di ricarica"
+      },
+      "charge_current": {
+        "name": "Corrente di ricarica"
+      }
+    },
+    "climate": {
+      "climate": {
+        "name": "Climatizzazione"
+      }
+    },
+    "lock": {
+      "lock": {
+        "name": "Portiere"
+      }
+    },
+    "button": {
+      "open_frunk": {
+        "name": "Apri bagagliaio anteriore"
+      },
+      "actuate_trunk": {
+        "name": "Apri o chiudi bagagliaio"
+      },
+      "honk": {
+        "name": "Clacson"
+      },
+      "flash_lights": {
+        "name": "Lampeggio fari"
+      },
+      "wake": {
+        "name": "Risveglia"
+      }
+    },
+    "select": {
+      "seat_heater_left": {
+        "name": "Sedile riscaldato guida",
+        "state": {
+          "off": "Spento",
+          "low": "Basso",
+          "medium": "Medio",
+          "high": "Alto"
+        }
+      },
+      "seat_heater_right": {
+        "name": "Sedile riscaldato passeggero",
+        "state": {
+          "off": "Spento",
+          "low": "Basso",
+          "medium": "Medio",
+          "high": "Alto"
+        }
+      },
+      "seat_heater_rear_left": {
+        "name": "Sedile riscaldato posteriore sinistro",
+        "state": {
+          "off": "Spento",
+          "low": "Basso",
+          "medium": "Medio",
+          "high": "Alto"
+        }
+      },
+      "seat_heater_rear_center": {
+        "name": "Sedile riscaldato posteriore centrale",
+        "state": {
+          "off": "Spento",
+          "low": "Basso",
+          "medium": "Medio",
+          "high": "Alto"
+        }
+      },
+      "seat_heater_rear_right": {
+        "name": "Sedile riscaldato posteriore destro",
+        "state": {
+          "off": "Spento",
+          "low": "Basso",
+          "medium": "Medio",
+          "high": "Alto"
+        }
+      }
+    }
+  },
+  "services": {
+    "refresh": {
+      "name": "Aggiorna",
+      "description": "Rilegge subito gli ultimi dati da Vigie. Gratuito, non risveglia l'auto.",
+      "fields": {
+        "device_id": {
+          "name": "Auto",
+          "description": "Auto da aggiornare. Tutte se vuoto."
+        }
+      }
+    }
+  },
+  "exceptions": {
+    "invalid_auth": {
+      "message": "Vigie rifiuta la chiave API."
+    },
+    "rate_limited": {
+      "message": "Limite di Vigie raggiunto, riprova tra poco."
+    },
+    "vehicle_not_found": {
+      "message": "Quest'auto non è più visibile con questa chiave."
+    },
+    "read_forbidden": {
+      "message": "La chiave non ha più il permesso di lettura."
+    },
+    "update_failed": {
+      "message": "Vigie non è raggiungibile ({error})."
+    },
+    "vehicle_asleep": {
+      "message": "L'auto dorme. Premi prima Risveglia (3 all'ora)."
+    },
+    "ability_missing": {
+      "message": "La chiave API non ha il permesso per questo comando: {message}"
+    },
+    "option_disabled": {
+      "message": "Questa opzione è disattivata per l'auto in Vigie: {message}"
+    },
+    "command_failed": {
+      "message": "Comando rifiutato: {message}"
+    }
+  }
+}

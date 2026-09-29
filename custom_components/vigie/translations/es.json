@@ -1,0 +1,342 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Conectar con Vigie",
+        "description": "Cree una clave API en Vigie, Cuenta → Claves API. El permiso de lectura es obligatorio; añada carga, confort, acceso o señal para controlar el coche.",
+        "data": {
+          "url": "Dirección de Vigie",
+          "api_key": "Clave API"
+        },
+        "data_description": {
+          "url": "Deje el valor por defecto salvo que use otra instancia de Vigie.",
+          "api_key": "Empieza por vigie_ (se muestra una sola vez al crearla)."
+        }
+      },
+      "vehicles": {
+        "title": "Coches",
+        "description": "Elija los coches que añadir a Home Assistant.",
+        "data": {
+          "vehicles": "Coches"
+        }
+      },
+      "reauth_confirm": {
+        "title": "Nueva clave API",
+        "description": "Vigie ({url}) rechaza la clave (revocada o caducada). Introduzca una nueva.",
+        "data": {
+          "api_key": "Clave API"
+        }
+      }
+    },
+    "error": {
+      "invalid_auth": "Clave no válida, caducada o revocada.",
+      "missing_read": "A esta clave le falta el permiso de lectura.",
+      "cannot_connect": "No se puede contactar con Vigie en esta dirección.",
+      "rate_limited": "Demasiadas solicitudes. Reintente en un minuto.",
+      "no_vehicles": "No hay ningún coche en esta cuenta de Vigie.",
+      "no_selection": "Elija al menos un coche.",
+      "invalid_url": "La dirección debe empezar por https://",
+      "unknown": "Error inesperado."
+    },
+    "abort": {
+      "already_configured": "Esta cuenta de Vigie ya está configurada.",
+      "reauth_successful": "Clave actualizada.",
+      "wrong_account": "Esta clave es de otra cuenta: no se ve ninguno de los coches configurados."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Opciones de Vigie",
+        "data": {
+          "scan_interval": "Intervalo de actualización",
+          "signal_buttons": "Botones de claxon y ráfaga"
+        },
+        "data_description": {
+          "scan_interval": "De 30 a 300 segundos. Las lecturas son gratuitas; límite de 60 por minuto y clave.",
+          "signal_buttons": "Actívelo solo si la clave tiene el permiso de señal. Vigie no puede comprobarlo sin tocar el claxon."
+        }
+      }
+    }
+  },
+  "entity": {
+    "sensor": {
+      "energy_remaining": {
+        "name": "Energía disponible"
+      },
+      "range": {
+        "name": "Autonomía"
+      },
+      "estimated_range": {
+        "name": "Autonomía estimada"
+      },
+      "battery_health": {
+        "name": "Salud de la batería"
+      },
+      "battery_capacity": {
+        "name": "Capacidad de la batería"
+      },
+      "battery_cycles": {
+        "name": "Ciclos de la batería"
+      },
+      "cell_gap": {
+        "name": "Diferencia entre celdas"
+      },
+      "battery_temp_min": {
+        "name": "Temperatura batería mín"
+      },
+      "battery_temp_max": {
+        "name": "Temperatura batería máx"
+      },
+      "pack_voltage": {
+        "name": "Tensión del pack"
+      },
+      "pack_current": {
+        "name": "Corriente del pack"
+      },
+      "pack_power": {
+        "name": "Potencia del pack"
+      },
+      "charging_power": {
+        "name": "Potencia de carga"
+      },
+      "charge_energy_added": {
+        "name": "Energía añadida"
+      },
+      "last_charge_energy": {
+        "name": "Energía de la última carga"
+      },
+      "energy_charged_total": {
+        "name": "Energía cargada total"
+      },
+      "energy_used_total": {
+        "name": "Energía consumida total"
+      },
+      "charge_state": {
+        "name": "Estado de carga",
+        "state": {
+          "disconnected": "Desenchufado",
+          "no_power": "Sin corriente",
+          "starting": "Iniciando",
+          "charging": "Cargando",
+          "complete": "Completada",
+          "stopped": "Detenida",
+          "unknown": "Desconocido"
+        }
+      },
+      "charge_limit": {
+        "name": "Límite de carga"
+      },
+      "charge_current": {
+        "name": "Intensidad de carga"
+      },
+      "odometer": {
+        "name": "Cuentakilómetros"
+      },
+      "inside_temperature": {
+        "name": "Temperatura interior"
+      },
+      "outside_temperature": {
+        "name": "Temperatura exterior"
+      },
+      "tyre_pressure_front_left": {
+        "name": "Presión neumático delantero izquierdo"
+      },
+      "tyre_pressure_front_right": {
+        "name": "Presión neumático delantero derecho"
+      },
+      "tyre_pressure_rear_left": {
+        "name": "Presión neumático trasero izquierdo"
+      },
+      "tyre_pressure_rear_right": {
+        "name": "Presión neumático trasero derecho"
+      },
+      "last_seen": {
+        "name": "Última recepción"
+      }
+    },
+    "binary_sensor": {
+      "online": {
+        "name": "En línea"
+      },
+      "charging": {
+        "name": "Cargando"
+      },
+      "plugged_in": {
+        "name": "Enchufado"
+      },
+      "charge_port_door": {
+        "name": "Tapa de carga"
+      },
+      "fast_charger": {
+        "name": "Cargador rápido"
+      },
+      "battery_heater": {
+        "name": "Calefacción de batería"
+      },
+      "locked": {
+        "name": "Cierre"
+      },
+      "doors": {
+        "name": "Puertas"
+      },
+      "frunk": {
+        "name": "Maletero delantero"
+      },
+      "trunk": {
+        "name": "Maletero"
+      },
+      "windows": {
+        "name": "Ventanillas"
+      },
+      "sentry": {
+        "name": "Modo Centinela"
+      },
+      "climate": {
+        "name": "Climatización"
+      },
+      "tyre_warning": {
+        "name": "Aviso de presión"
+      }
+    },
+    "device_tracker": {
+      "location": {
+        "name": "Ubicación"
+      }
+    },
+    "switch": {
+      "charge": {
+        "name": "Carga"
+      },
+      "sentry_mode": {
+        "name": "Modo Centinela"
+      },
+      "steering_wheel_heater": {
+        "name": "Volante calefactado"
+      }
+    },
+    "number": {
+      "charge_limit": {
+        "name": "Límite de carga"
+      },
+      "charge_current": {
+        "name": "Intensidad de carga"
+      }
+    },
+    "climate": {
+      "climate": {
+        "name": "Climatización"
+      }
+    },
+    "lock": {
+      "lock": {
+        "name": "Puertas"
+      }
+    },
+    "button": {
+      "open_frunk": {
+        "name": "Abrir maletero delantero"
+      },
+      "actuate_trunk": {
+        "name": "Abrir o cerrar maletero"
+      },
+      "honk": {
+        "name": "Claxon"
+      },
+      "flash_lights": {
+        "name": "Ráfaga de luces"
+      },
+      "wake": {
+        "name": "Despertar"
+      }
+    },
+    "select": {
+      "seat_heater_left": {
+        "name": "Asiento calefactado conductor",
+        "state": {
+          "off": "Apagado",
+          "low": "Bajo",
+          "medium": "Medio",
+          "high": "Alto"
+        }
+      },
+      "seat_heater_right": {
+        "name": "Asiento calefactado acompañante",
+        "state": {
+          "off": "Apagado",
+          "low": "Bajo",
+          "medium": "Medio",
+          "high": "Alto"
+        }
+      },
+      "seat_heater_rear_left": {
+        "name": "Asiento calefactado trasero izquierdo",
+        "state": {
+          "off": "Apagado",
+          "low": "Bajo",
+          "medium": "Medio",
+          "high": "Alto"
+        }
+      },
+      "seat_heater_rear_center": {
+        "name": "Asiento calefactado trasero central",
+        "state": {
+          "off": "Apagado",
+          "low": "Bajo",
+          "medium": "Medio",
+          "high": "Alto"
+        }
+      },
+      "seat_heater_rear_right": {
+        "name": "Asiento calefactado trasero derecho",
+        "state": {
+          "off": "Apagado",
+          "low": "Bajo",
+          "medium": "Medio",
+          "high": "Alto"
+        }
+      }
+    }
+  },
+  "services": {
+    "refresh": {
+      "name": "Actualizar",
+      "description": "Lee ahora los últimos datos de Vigie. Gratis, no despierta el coche.",
+      "fields": {
+        "device_id": {
+          "name": "Coches",
+          "description": "Coches que actualizar. Todos si está vacío."
+        }
+      }
+    }
+  },
+  "exceptions": {
+    "invalid_auth": {
+      "message": "Vigie rechaza la clave API."
+    },
+    "rate_limited": {
+      "message": "Límite de Vigie alcanzado, reintente en un momento."
+    },
+    "vehicle_not_found": {
+      "message": "Este coche ya no es visible con esta clave."
+    },
+    "read_forbidden": {
+      "message": "La clave ya no tiene permiso de lectura."
+    },
+    "update_failed": {
+      "message": "Vigie no responde ({error})."
+    },
+    "vehicle_asleep": {
+      "message": "El coche está dormido. Pulse primero Despertar (3 por hora)."
+    },
+    "ability_missing": {
+      "message": "La clave API no tiene permiso para este comando: {message}"
+    },
+    "option_disabled": {
+      "message": "Esta opción está desactivada para el coche en Vigie: {message}"
+    },
+    "command_failed": {
+      "message": "Comando rechazado: {message}"
+    }
+  }
+}

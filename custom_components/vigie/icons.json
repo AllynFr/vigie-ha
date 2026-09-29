@@ -1,0 +1,63 @@
+{
+  "entity": {
+    "sensor": {
+      "energy_remaining": { "default": "mdi:battery-high" },
+      "range": { "default": "mdi:map-marker-distance" },
+      "estimated_range": { "default": "mdi:map-marker-distance" },
+      "battery_health": { "default": "mdi:battery-heart-variant" },
+      "battery_capacity": { "default": "mdi:battery-high" },
+      "battery_cycles": { "default": "mdi:battery-sync" },
+      "cell_gap": { "default": "mdi:scale-unbalanced" },
+      "charge_state": {
+        "default": "mdi:ev-station",
+        "state": {
+          "disconnected": "mdi:power-plug-off",
+          "charging": "mdi:battery-charging",
+          "complete": "mdi:battery-check"
+        }
+      },
+      "charge_limit": { "default": "mdi:battery-arrow-up" },
+      "odometer": { "default": "mdi:counter" },
+      "last_seen": { "default": "mdi:clock-check-outline" },
+      "tyre_pressure_front_left": { "default": "mdi:car-tire-alert" },
+      "tyre_pressure_front_right": { "default": "mdi:car-tire-alert" },
+      "tyre_pressure_rear_left": { "default": "mdi:car-tire-alert" },
+      "tyre_pressure_rear_right": { "default": "mdi:car-tire-alert" }
+    },
+    "binary_sensor": {
+      "sentry": { "default": "mdi:cctv-off", "state": { "on": "mdi:cctv" } },
+      "frunk": { "default": "mdi:car-select" },
+      "trunk": { "default": "mdi:car-back" },
+      "fast_charger": { "default": "mdi:ev-plug-ccs2" }
+    },
+    "switch": {
+      "charge": { "default": "mdi:ev-station" },
+      "sentry_mode": { "default": "mdi:cctv-off", "state": { "on": "mdi:cctv" } },
+      "steering_wheel_heater": { "default": "mdi:steering" }
+    },
+    "number": {
+      "charge_limit": { "default": "mdi:battery-arrow-up" },
+      "charge_current": { "default": "mdi:current-ac" }
+    },
+    "button": {
+      "open_frunk": { "default": "mdi:car-select" },
+      "actuate_trunk": { "default": "mdi:car-back" },
+      "honk": { "default": "mdi:bullhorn" },
+      "flash_lights": { "default": "mdi:car-light-high" },
+      "wake": { "default": "mdi:sleep-off" }
+    },
+    "select": {
+      "seat_heater_left": { "default": "mdi:car-seat-heater" },
+      "seat_heater_right": { "default": "mdi:car-seat-heater" },
+      "seat_heater_rear_left": { "default": "mdi:car-seat-heater" },
+      "seat_heater_rear_center": { "default": "mdi:car-seat-heater" },
+      "seat_heater_rear_right": { "default": "mdi:car-seat-heater" }
+    },
+    "device_tracker": {
+      "location": { "default": "mdi:car" }
+    }
+  },
+  "services": {
+    "refresh": { "service": "mdi:refresh" }
+  }
+}
