@@ -18,6 +18,7 @@ from .api import (
     VigieError,
     VigieForbiddenError,
     VigieRateLimitError,
+    app_url,
 )
 from .const import DOMAIN, MANUFACTURER
 from .coordinator import VigieCoordinator, VigieData
@@ -50,7 +51,7 @@ class VigieEntity(CoordinatorEntity[VigieCoordinator]):
             model_id=pack.get("variant"),
             name=vehicle.get("name") or f"Tesla {coordinator.vehicle_id}",
             serial_number=vehicle.get("vin_masked"),
-            configuration_url=f"{coordinator.client.base_url}/voiture",
+            configuration_url=f"{app_url(coordinator.client.base_url)}/voiture",
         )
 
     @property

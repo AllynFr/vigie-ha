@@ -310,3 +310,54 @@ async def test_charge_state_decoding(hass: HomeAssistant, vigie: FakeVigie, raw:
     vigie.register()
     entry = await _setup(hass)
     assert _state(hass, entry, "charge_state").state == expected
+
+
+async def test_charge_eta_and_navigation_sensors(hass: HomeAssistant, vigie: FakeVigie, freezer: FrozenDateTimeFactory) -> None:
+    entry = await _setup(hass)
+    # Not charging, no destination: the sensors exist but are unavailable.
+    for key in ("charge_time_remaining", "charge_end", "nav_distance_remaining", "nav_arrival", "nav_battery_at_arrival"):
+        assert _state(hass, entry, key).state == STATE_UNAVAILABLE, key
+
+    vigie.state["charge_session"].update(
+        {
+            "state": "Charging",
+            "charging": True,
+            "time_to_limit_min": 85,
+            "eta": "2026-09-29T21:40:00Z",
+            "target_soc": 80,
+            "eta_source": "tesla",
+        }
+    )
+    vigie.state["navigation"] = {
+        "minutes_to_arrival": 41,
+        "arrival": "2026-09-29T13:01:00Z",
+        "distance_km": 32.2,
+        "battery_at_arrival": 32,
+        "traffic_delay_min": 3,
+    }
+    vigie.register()
+    freezer.tick(timedelta(seconds=61))
+    async_fire_time_changed(hass)
+    await hass.async_block_till_done()
+
+    remaining = _state(hass, entry, "charge_time_remaining")
+    assert remaining.state == "85"
+    assert remaining.attributes["unit_of_measurement"] == "min"
+    assert remaining.attributes["device_class"] == "duration"
+    assert remaining.attributes["source"] == "tesla"
+    assert remaining.attributes["target_soc"] == 80
+    end = _state(hass, entry, "charge_end")
+    assert end.state == "2026-09-29T21:40:00+00:00"
+    assert end.attributes["source"] == "tesla"
+    assert _state(hass, entry, "nav_distance_remaining").state == "32.2"
+    assert _state(hass, entry, "nav_arrival").state == "2026-09-29T13:01:00+00:00"
+    assert _state(hass, entry, "nav_battery_at_arrival").state == "32"
+
+
+async def test_navigation_sensors_need_location(hass: HomeAssistant, vigie: FakeVigie) -> None:
+    vigie.set_options(location=False)
+    del vigie.state["values"]["Location"]
+    vigie.register()
+    entry = await _setup(hass)
+    assert "nav_arrival" not in _entities(hass, entry)
+    assert "charge_time_remaining" in _entities(hass, entry)

@@ -2,14 +2,14 @@
   "config": {
     "step": {
       "user": {
-        "title": "Connect to Vigie",
-        "description": "Create an API key in Vigie under Account → API keys. The read permission is required; add charge, comfort, access or signal to control the car.",
+        "title": "Connect to ioDek",
+        "description": "Create an API key in ioDek under Account → API keys. The read permission is required; add charge, comfort, access or signal to control the car.",
         "data": {
-          "url": "Vigie address",
+          "url": "ioDek address",
           "api_key": "API key"
         },
         "data_description": {
-          "url": "Leave the default unless you use another Vigie instance.",
+          "url": "Leave the default unless you use another ioDek instance.",
           "api_key": "Starts with vigie_ (shown once at creation)."
         }
       },
@@ -22,7 +22,7 @@
       },
       "reauth_confirm": {
         "title": "New API key",
-        "description": "Vigie at {url} refused the key (revoked or expired). Enter a new one.",
+        "description": "ioDek at {url} refused the key (revoked or expired). Enter a new one.",
         "data": {
           "api_key": "API key"
         }
@@ -31,15 +31,15 @@
     "error": {
       "invalid_auth": "Invalid, expired or revoked key.",
       "missing_read": "This key lacks the read permission.",
-      "cannot_connect": "Cannot reach Vigie at this address.",
+      "cannot_connect": "Cannot reach ioDek at this address.",
       "rate_limited": "Too many requests. Try again in a minute.",
-      "no_vehicles": "No car on this Vigie account.",
+      "no_vehicles": "No car on this ioDek account.",
       "no_selection": "Choose at least one car.",
       "invalid_url": "The address must start with https://",
       "unknown": "Unexpected error."
     },
     "abort": {
-      "already_configured": "This Vigie account is already configured.",
+      "already_configured": "This ioDek account is already configured.",
       "reauth_successful": "Key updated.",
       "wrong_account": "This key belongs to another account: none of the configured cars is visible."
     }
@@ -47,14 +47,14 @@
   "options": {
     "step": {
       "init": {
-        "title": "Vigie options",
+        "title": "ioDek options",
         "data": {
           "scan_interval": "Update interval",
           "signal_buttons": "Horn and flash buttons"
         },
         "data_description": {
           "scan_interval": "30 to 300 seconds. Reads are free; the limit is 60 per minute per key.",
-          "signal_buttons": "Turn on only if the key has the signal permission. Vigie cannot report it without sounding the horn."
+          "signal_buttons": "Turn on only if the key has the signal permission. ioDek cannot report it without sounding the horn."
         }
       }
     }
@@ -150,6 +150,21 @@
       },
       "tyre_pressure_rear_right": {
         "name": "Tyre pressure rear right"
+      },
+      "charge_time_remaining": {
+        "name": "Charged in"
+      },
+      "charge_end": {
+        "name": "Charge end"
+      },
+      "nav_distance_remaining": {
+        "name": "Distance remaining"
+      },
+      "nav_arrival": {
+        "name": "Expected arrival"
+      },
+      "nav_battery_at_arrival": {
+        "name": "Battery at arrival"
       },
       "last_seen": {
         "name": "Last data received"
@@ -301,7 +316,7 @@
   "services": {
     "refresh": {
       "name": "Refresh",
-      "description": "Reads the latest data from Vigie now. Free, does not wake the car.",
+      "description": "Reads the latest data from ioDek now. Free, does not wake the car.",
       "fields": {
         "device_id": {
           "name": "Cars",
@@ -312,10 +327,10 @@
   },
   "exceptions": {
     "invalid_auth": {
-      "message": "Vigie refused the API key."
+      "message": "ioDek refused the API key."
     },
     "rate_limited": {
-      "message": "Vigie limit reached, try again shortly."
+      "message": "ioDek limit reached, try again shortly."
     },
     "vehicle_not_found": {
       "message": "This car is no longer visible with this key."
@@ -324,7 +339,7 @@
       "message": "The key no longer has the read permission."
     },
     "update_failed": {
-      "message": "Vigie is unreachable ({error})."
+      "message": "ioDek is unreachable ({error})."
     },
     "vehicle_asleep": {
       "message": "The car is asleep. Press Wake up first (3 per hour)."
@@ -333,7 +348,7 @@
       "message": "The API key lacks the permission for this command: {message}"
     },
     "option_disabled": {
-      "message": "This option is off for the car in Vigie: {message}"
+      "message": "This option is off for the car in ioDek: {message}"
     },
     "command_failed": {
       "message": "Command refused: {message}"

@@ -23,6 +23,7 @@ from homeassistant.const import (
     UnitOfPower,
     UnitOfPressure,
     UnitOfTemperature,
+    UnitOfTime,
 )
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddConfigEntryEntitiesCallback
@@ -45,6 +46,8 @@ class VigieSensorDescription(SensorEntityDescription):
     exists_fn: Callable[[VigieData], bool]
     attrs_fn: Callable[[VigieData], dict[str, Any] | None] | None = None
     live: bool = False
+    # Unavailable while this returns False (not charging, no destination…).
+    available_fn: Callable[[VigieData], bool] | None = None
     # Hidden when the matching control (number) exists.
     replaced_by_ability: str | None = None
 
@@ -94,6 +97,23 @@ def _session_energy(data: VigieData) -> float | None:
 def _pack_power(data: VigieData) -> float | None:
     v = data.state.get("pack_power_w")
     return round(float(v) / 1000, 2) if v is not None else None
+
+
+def _session(data: VigieData) -> dict[str, Any]:
+    return data.state.get("charge_session") or {}
+
+
+def _nav(data: VigieData) -> dict[str, Any]:
+    return data.state.get("navigation") or {}
+
+
+def _time(raw: str | None) -> datetime | None:
+    return dt_util.parse_datetime(raw) if raw else None
+
+
+def _eta_attrs(data: VigieData) -> dict[str, Any]:
+    s = _session(data)
+    return {"source": s.get("eta_source"), "target_soc": s.get("target_soc"), "end": s.get("eta")}
 
 
 def _last_seen(data: VigieData) -> datetime | None:
@@ -359,6 +379,55 @@ SENSORS: tuple[VigieSensorDescription, ...] = (
     _tyre("tyre_pressure_front_right", "TpmsPressureFr"),
     _tyre("tyre_pressure_rear_left", "TpmsPressureRl"),
     _tyre("tyre_pressure_rear_right", "TpmsPressureRr"),
+    # « Chargé dans » : Tesla's own estimate when fresh (source: tesla), else ioDek's (source: estimation).
+    VigieSensorDescription(
+        key="charge_time_remaining",
+        translation_key="charge_time_remaining",
+        device_class=SensorDeviceClass.DURATION,
+        native_unit_of_measurement=UnitOfTime.MINUTES,
+        value_fn=lambda d: _session(d).get("time_to_limit_min"),
+        exists_fn=lambda d: "time_to_limit_min" in _session(d),
+        available_fn=lambda d: _session(d).get("time_to_limit_min") is not None,
+        attrs_fn=_eta_attrs,
+    ),
+    VigieSensorDescription(
+        key="charge_end",
+        translation_key="charge_end",
+        device_class=SensorDeviceClass.TIMESTAMP,
+        value_fn=lambda d: _time(_session(d).get("eta")),
+        exists_fn=lambda d: "eta" in _session(d),
+        available_fn=lambda d: _session(d).get("eta") is not None,
+        attrs_fn=_eta_attrs,
+    ),
+    # Destination in the car's navigation (Location option).
+    VigieSensorDescription(
+        key="nav_distance_remaining",
+        translation_key="nav_distance_remaining",
+        device_class=SensorDeviceClass.DISTANCE,
+        native_unit_of_measurement=UnitOfLength.KILOMETERS,
+        suggested_display_precision=1,
+        value_fn=lambda d: _nav(d).get("distance_km"),
+        exists_fn=lambda d: "navigation" in d.state and d.options.get("location", False),
+        available_fn=lambda d: _nav(d).get("distance_km") is not None,
+    ),
+    VigieSensorDescription(
+        key="nav_arrival",
+        translation_key="nav_arrival",
+        device_class=SensorDeviceClass.TIMESTAMP,
+        value_fn=lambda d: _time(_nav(d).get("arrival")),
+        exists_fn=lambda d: "navigation" in d.state and d.options.get("location", False),
+        available_fn=lambda d: _nav(d).get("arrival") is not None,
+        attrs_fn=lambda d: {"minutes": _nav(d).get("minutes_to_arrival"), "traffic_delay_min": _nav(d).get("traffic_delay_min")},
+    ),
+    VigieSensorDescription(
+        key="nav_battery_at_arrival",
+        translation_key="nav_battery_at_arrival",
+        device_class=SensorDeviceClass.BATTERY,
+        native_unit_of_measurement=PERCENTAGE,
+        value_fn=lambda d: _nav(d).get("battery_at_arrival"),
+        exists_fn=lambda d: "navigation" in d.state and d.options.get("location", False),
+        available_fn=lambda d: _nav(d).get("battery_at_arrival") is not None,
+    ),
     VigieSensorDescription(
         key="last_seen",
         translation_key="last_seen",
@@ -394,6 +463,13 @@ class VigieSensor(VigieEntity, SensorEntity):
     def __init__(self, coordinator: VigieCoordinator, description: VigieSensorDescription) -> None:
         super().__init__(coordinator, description)
         self._live = description.live
+
+    @property
+    def available(self) -> bool:
+        if not super().available:
+            return False
+        fn = self.entity_description.available_fn
+        return fn is None or bool(fn(self.data))
 
     @property
     def native_value(self) -> Any:

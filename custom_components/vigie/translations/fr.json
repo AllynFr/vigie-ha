@@ -2,14 +2,14 @@
   "config": {
     "step": {
       "user": {
-        "title": "Connexion à Vigie",
-        "description": "Créez une clé API dans Vigie, Compte → Clés API. Le droit lecture est obligatoire ; ajoutez charge, confort, accès ou signal pour piloter la voiture.",
+        "title": "Connexion à ioDek",
+        "description": "Créez une clé API dans ioDek, Compte → Clés API. Le droit lecture est obligatoire ; ajoutez charge, confort, accès ou signal pour piloter la voiture.",
         "data": {
-          "url": "Adresse de Vigie",
+          "url": "Adresse d'ioDek",
           "api_key": "Clé API"
         },
         "data_description": {
-          "url": "Laissez la valeur par défaut, sauf pour une autre instance de Vigie.",
+          "url": "Laissez la valeur par défaut, sauf pour une autre instance d'ioDek.",
           "api_key": "Commence par vigie_ (affichée une seule fois à la création)."
         }
       },
@@ -22,7 +22,7 @@
       },
       "reauth_confirm": {
         "title": "Nouvelle clé API",
-        "description": "Vigie ({url}) refuse la clé (révoquée ou expirée). Saisissez-en une nouvelle.",
+        "description": "ioDek ({url}) refuse la clé (révoquée ou expirée). Saisissez-en une nouvelle.",
         "data": {
           "api_key": "Clé API"
         }
@@ -31,15 +31,15 @@
     "error": {
       "invalid_auth": "Clé invalide, expirée ou révoquée.",
       "missing_read": "Cette clé n'a pas le droit lecture.",
-      "cannot_connect": "Vigie injoignable à cette adresse.",
+      "cannot_connect": "ioDek injoignable à cette adresse.",
       "rate_limited": "Trop de requêtes. Réessayez dans une minute.",
-      "no_vehicles": "Aucune voiture sur ce compte Vigie.",
+      "no_vehicles": "Aucune voiture sur ce compte ioDek.",
       "no_selection": "Choisissez au moins une voiture.",
       "invalid_url": "L'adresse doit commencer par https://",
       "unknown": "Erreur inattendue."
     },
     "abort": {
-      "already_configured": "Ce compte Vigie est déjà configuré.",
+      "already_configured": "Ce compte ioDek est déjà configuré.",
       "reauth_successful": "Clé mise à jour.",
       "wrong_account": "Cette clé appartient à un autre compte : aucune des voitures configurées n'est visible."
     }
@@ -47,14 +47,14 @@
   "options": {
     "step": {
       "init": {
-        "title": "Options de Vigie",
+        "title": "Options d'ioDek",
         "data": {
           "scan_interval": "Intervalle d'actualisation",
           "signal_buttons": "Boutons klaxon et appel de phares"
         },
         "data_description": {
           "scan_interval": "De 30 à 300 secondes. Les lectures sont gratuites ; limite de 60 par minute et par clé.",
-          "signal_buttons": "À activer seulement si la clé a le droit signal. Vigie ne peut pas le vérifier sans klaxonner."
+          "signal_buttons": "À activer seulement si la clé a le droit signal. ioDek ne peut pas le vérifier sans klaxonner."
         }
       }
     }
@@ -150,6 +150,21 @@
       },
       "tyre_pressure_rear_right": {
         "name": "Pression pneu arrière droit"
+      },
+      "charge_time_remaining": {
+        "name": "Chargé dans"
+      },
+      "charge_end": {
+        "name": "Fin de charge"
+      },
+      "nav_distance_remaining": {
+        "name": "Distance restante"
+      },
+      "nav_arrival": {
+        "name": "Arrivée prévue"
+      },
+      "nav_battery_at_arrival": {
+        "name": "Batterie à l'arrivée"
       },
       "last_seen": {
         "name": "Dernière réception"
@@ -301,7 +316,7 @@
   "services": {
     "refresh": {
       "name": "Actualiser",
-      "description": "Relit tout de suite les dernières données de Vigie. Gratuit, ne réveille pas la voiture.",
+      "description": "Relit tout de suite les dernières données d'ioDek. Gratuit, ne réveille pas la voiture.",
       "fields": {
         "device_id": {
           "name": "Voitures",
@@ -312,10 +327,10 @@
   },
   "exceptions": {
     "invalid_auth": {
-      "message": "Vigie refuse la clé API."
+      "message": "ioDek refuse la clé API."
     },
     "rate_limited": {
-      "message": "Limite de Vigie atteinte, réessayez dans un instant."
+      "message": "Limite d'ioDek atteinte, réessayez dans un instant."
     },
     "vehicle_not_found": {
       "message": "Cette voiture n'est plus visible avec cette clé."
@@ -324,7 +339,7 @@
       "message": "La clé n'a plus le droit lecture."
     },
     "update_failed": {
-      "message": "Vigie est injoignable ({error})."
+      "message": "ioDek est injoignable ({error})."
     },
     "vehicle_asleep": {
       "message": "La voiture dort. Appuyez d'abord sur Réveiller (3 par heure)."
@@ -333,7 +348,7 @@
       "message": "La clé API n'a pas le droit pour cette commande : {message}"
     },
     "option_disabled": {
-      "message": "Cette option est désactivée pour la voiture dans Vigie : {message}"
+      "message": "Cette option est désactivée pour la voiture dans ioDek : {message}"
     },
     "command_failed": {
       "message": "Commande refusée : {message}"

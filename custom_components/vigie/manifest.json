@@ -1,7 +1,9 @@
 {
   "domain": "vigie",
-  "name": "Vigie",
-  "codeowners": ["@AllynFr"],
+  "name": "ioDek",
+  "codeowners": [
+    "@AllynFr"
+  ],
   "config_flow": true,
   "dependencies": [],
   "documentation": "https://github.com/AllynFr/vigie-ha",
@@ -9,5 +11,5 @@
   "iot_class": "cloud_polling",
   "issue_tracker": "https://github.com/AllynFr/vigie-ha/issues",
   "requirements": [],
-  "version": "0.1.0"
+  "version": "0.2.0"
 }

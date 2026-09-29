@@ -1,42 +1,258 @@
-{"vehicle_id": 1, "last_received_at": "2026-09-29T12:20:15.890Z", "age_s": 30, "online": true, "asleep": false,
- "options": {"location": true, "charge": true, "comfort": true, "access": true, "signal": true},
- "pack_power_w": -142,
- "values": {
-  "ACChargingEnergyIn": {"value": 12.9937, "unit": "kWh", "received_at": "2026-09-29T12:00:00Z", "age_s": 60},
-  "ACChargingPower": {"value": 0, "unit": "W", "received_at": "2026-09-29T12:00:00Z", "age_s": 60},
-  "BatteryHeaterOn": {"value": false, "unit": null, "received_at": "2026-09-29T12:00:00Z", "age_s": 60},
-  "BatteryLevel": {"value": 58.2884, "unit": "%", "received_at": "2026-09-29T12:00:00Z", "age_s": 60},
-  "BrickVoltageMax": {"value": 3.298, "unit": "V", "received_at": "2026-09-29T12:00:00Z", "age_s": 60},
-  "BrickVoltageMin": {"value": 3.294, "unit": "V", "received_at": "2026-09-29T12:00:00Z", "age_s": 60},
-  "ChargeAmps": {"value": 16, "unit": "A", "received_at": "2026-09-29T12:00:00Z", "age_s": 60},
-  "ChargeLimitSoc": {"value": 69, "unit": "%", "received_at": "2026-09-29T12:00:00Z", "age_s": 60},
-  "ChargePortDoorOpen": {"value": false, "unit": null, "received_at": "2026-09-29T12:00:00Z", "age_s": 60},
-  "DCChargingEnergyIn": {"value": 12.18, "unit": "kWh", "received_at": "2026-09-29T12:00:00Z", "age_s": 60},
-  "DCChargingPower": {"value": 0, "unit": "W", "received_at": "2026-09-29T12:00:00Z", "age_s": 60},
-  "DetailedChargeState": {"value": "DetailedChargeStateDisconnected", "unit": null, "received_at": "2026-09-29T12:00:00Z", "age_s": 60},
-  "DoorState": {"value": "{\"DriverFront\":false,\"DriverRear\":false,\"PassengerFront\":false,\"PassengerRear\":false,\"TrunkFront\":false,\"TrunkRear\":true}", "unit": null, "received_at": "2026-09-29T12:00:00Z", "age_s": 60},
-  "EnergyRemaining": {"value": 33.38, "unit": "kWh", "received_at": "2026-09-29T12:00:00Z", "age_s": 60},
-  "FastChargerPresent": {"value": false, "unit": null, "received_at": "2026-09-29T12:00:00Z", "age_s": 60},
-  "FdWindow": {"value": "WindowStateClosed", "unit": null, "received_at": "2026-09-29T12:00:00Z", "age_s": 60},
-  "FpWindow": {"value": "WindowStatePartiallyOpen", "unit": null, "received_at": "2026-09-29T12:00:00Z", "age_s": 60},
-  "HvacLeftTemperatureRequest": {"value": 21, "unit": "°C", "received_at": "2026-09-29T12:00:00Z", "age_s": 60},
-  "HvacPower": {"value": "HvacPowerStateOff", "unit": null, "received_at": "2026-09-29T12:00:00Z", "age_s": 60},
-  "HvacSteeringWheelHeatLevel": {"value": 0, "unit": null, "received_at": "2026-09-29T12:00:00Z", "age_s": 60},
-  "InsideTemp": {"value": 24.5, "unit": "°C", "received_at": "2026-09-29T12:00:00Z", "age_s": 60},
-  "LifetimeEnergyChargedKwh": {"value": 20896.101, "unit": "kWh", "received_at": "2026-09-29T12:00:00Z", "age_s": 60},
-  "Location": {"value": {"lat": 48.8584, "lon": 2.2945}, "unit": null, "received_at": "2026-09-29T12:00:00Z", "age_s": 60},
-  "Locked": {"value": true, "unit": null, "received_at": "2026-09-29T12:00:00Z", "age_s": 60},
-  "ModuleTempMax": {"value": 25, "unit": "°C", "received_at": "2026-09-29T12:00:00Z", "age_s": 60},
-  "ModuleTempMin": {"value": 24.5, "unit": "°C", "received_at": "2026-09-29T12:00:00Z", "age_s": 60},
-  "Odometer": {"value": 106104.383, "unit": "km", "received_at": "2026-09-29T12:00:00Z", "age_s": 60},
-  "OutsideTemp": {"value": 25.5, "unit": "°C", "received_at": "2026-09-29T12:00:00Z", "age_s": 60},
-  "PackCurrent": {"value": -0.4, "unit": "A", "received_at": "2026-09-29T12:00:00Z", "age_s": 60},
-  "PackVoltage": {"value": 356.03, "unit": "V", "received_at": "2026-09-29T12:00:00Z", "age_s": 60},
-  "RatedRange": {"value": 234.8655, "unit": "km", "received_at": "2026-09-29T12:00:00Z", "age_s": 60},
-  "SeatHeaterLeft": {"value": 2, "unit": null, "received_at": "2026-09-29T12:00:00Z", "age_s": 60},
-  "SentryMode": {"value": "SentryModeStateArmed", "unit": null, "received_at": "2026-09-29T12:00:00Z", "age_s": 60},
-  "TpmsPressureFl": {"value": 2.9, "unit": "bar", "received_at": "2026-09-29T12:00:00Z", "age_s": 60},
-  "TpmsPressureFr": {"value": 2.875, "unit": "bar", "received_at": "2026-09-29T12:00:00Z", "age_s": 60},
-  "TpmsPressureRl": {"value": 2.9, "unit": "bar", "received_at": "2026-09-29T12:00:00Z", "age_s": 60},
-  "TpmsPressureRr": {"value": 2.925, "unit": "bar", "received_at": "2026-09-29T12:00:00Z", "age_s": 60}
- }}
+{
+  "vehicle_id": 1,
+  "last_received_at": "2026-09-29T12:20:15.890Z",
+  "age_s": 30,
+  "online": true,
+  "asleep": false,
+  "options": {
+    "location": true,
+    "charge": true,
+    "comfort": true,
+    "access": true,
+    "signal": true
+  },
+  "pack_power_w": -142,
+  "charge_session": {
+    "state": "Disconnected",
+    "charging": false,
+    "type": null,
+    "power_kw": null,
+    "energy_added_kwh": null,
+    "started_at": null,
+    "duration_s": null,
+    "limit_percent": 80,
+    "amps": 16,
+    "time_to_limit_min": null,
+    "eta": null,
+    "target_soc": null,
+    "eta_source": null
+  },
+  "navigation": null,
+  "values": {
+    "ACChargingEnergyIn": {
+      "value": 12.9937,
+      "unit": "kWh",
+      "received_at": "2026-09-29T12:00:00Z",
+      "age_s": 60
+    },
+    "ACChargingPower": {
+      "value": 0,
+      "unit": "W",
+      "received_at": "2026-09-29T12:00:00Z",
+      "age_s": 60
+    },
+    "BatteryHeaterOn": {
+      "value": false,
+      "unit": null,
+      "received_at": "2026-09-29T12:00:00Z",
+      "age_s": 60
+    },
+    "BatteryLevel": {
+      "value": 58.2884,
+      "unit": "%",
+      "received_at": "2026-09-29T12:00:00Z",
+      "age_s": 60
+    },
+    "BrickVoltageMax": {
+      "value": 3.298,
+      "unit": "V",
+      "received_at": "2026-09-29T12:00:00Z",
+      "age_s": 60
+    },
+    "BrickVoltageMin": {
+      "value": 3.294,
+      "unit": "V",
+      "received_at": "2026-09-29T12:00:00Z",
+      "age_s": 60
+    },
+    "ChargeAmps": {
+      "value": 16,
+      "unit": "A",
+      "received_at": "2026-09-29T12:00:00Z",
+      "age_s": 60
+    },
+    "ChargeLimitSoc": {
+      "value": 69,
+      "unit": "%",
+      "received_at": "2026-09-29T12:00:00Z",
+      "age_s": 60
+    },
+    "ChargePortDoorOpen": {
+      "value": false,
+      "unit": null,
+      "received_at": "2026-09-29T12:00:00Z",
+      "age_s": 60
+    },
+    "DCChargingEnergyIn": {
+      "value": 12.18,
+      "unit": "kWh",
+      "received_at": "2026-09-29T12:00:00Z",
+      "age_s": 60
+    },
+    "DCChargingPower": {
+      "value": 0,
+      "unit": "W",
+      "received_at": "2026-09-29T12:00:00Z",
+      "age_s": 60
+    },
+    "DetailedChargeState": {
+      "value": "DetailedChargeStateDisconnected",
+      "unit": null,
+      "received_at": "2026-09-29T12:00:00Z",
+      "age_s": 60
+    },
+    "DoorState": {
+      "value": "{\"DriverFront\":false,\"DriverRear\":false,\"PassengerFront\":false,\"PassengerRear\":false,\"TrunkFront\":false,\"TrunkRear\":true}",
+      "unit": null,
+      "received_at": "2026-09-29T12:00:00Z",
+      "age_s": 60
+    },
+    "EnergyRemaining": {
+      "value": 33.38,
+      "unit": "kWh",
+      "received_at": "2026-09-29T12:00:00Z",
+      "age_s": 60
+    },
+    "FastChargerPresent": {
+      "value": false,
+      "unit": null,
+      "received_at": "2026-09-29T12:00:00Z",
+      "age_s": 60
+    },
+    "FdWindow": {
+      "value": "WindowStateClosed",
+      "unit": null,
+      "received_at": "2026-09-29T12:00:00Z",
+      "age_s": 60
+    },
+    "FpWindow": {
+      "value": "WindowStatePartiallyOpen",
+      "unit": null,
+      "received_at": "2026-09-29T12:00:00Z",
+      "age_s": 60
+    },
+    "HvacLeftTemperatureRequest": {
+      "value": 21,
+      "unit": "°C",
+      "received_at": "2026-09-29T12:00:00Z",
+      "age_s": 60
+    },
+    "HvacPower": {
+      "value": "HvacPowerStateOff",
+      "unit": null,
+      "received_at": "2026-09-29T12:00:00Z",
+      "age_s": 60
+    },
+    "HvacSteeringWheelHeatLevel": {
+      "value": 0,
+      "unit": null,
+      "received_at": "2026-09-29T12:00:00Z",
+      "age_s": 60
+    },
+    "InsideTemp": {
+      "value": 24.5,
+      "unit": "°C",
+      "received_at": "2026-09-29T12:00:00Z",
+      "age_s": 60
+    },
+    "LifetimeEnergyChargedKwh": {
+      "value": 20896.101,
+      "unit": "kWh",
+      "received_at": "2026-09-29T12:00:00Z",
+      "age_s": 60
+    },
+    "Location": {
+      "value": {
+        "lat": 48.8584,
+        "lon": 2.2945
+      },
+      "unit": null,
+      "received_at": "2026-09-29T12:00:00Z",
+      "age_s": 60
+    },
+    "Locked": {
+      "value": true,
+      "unit": null,
+      "received_at": "2026-09-29T12:00:00Z",
+      "age_s": 60
+    },
+    "ModuleTempMax": {
+      "value": 25,
+      "unit": "°C",
+      "received_at": "2026-09-29T12:00:00Z",
+      "age_s": 60
+    },
+    "ModuleTempMin": {
+      "value": 24.5,
+      "unit": "°C",
+      "received_at": "2026-09-29T12:00:00Z",
+      "age_s": 60
+    },
+    "Odometer": {
+      "value": 106104.383,
+      "unit": "km",
+      "received_at": "2026-09-29T12:00:00Z",
+      "age_s": 60
+    },
+    "OutsideTemp": {
+      "value": 25.5,
+      "unit": "°C",
+      "received_at": "2026-09-29T12:00:00Z",
+      "age_s": 60
+    },
+    "PackCurrent": {
+      "value": -0.4,
+      "unit": "A",
+      "received_at": "2026-09-29T12:00:00Z",
+      "age_s": 60
+    },
+    "PackVoltage": {
+      "value": 356.03,
+      "unit": "V",
+      "received_at": "2026-09-29T12:00:00Z",
+      "age_s": 60
+    },
+    "RatedRange": {
+      "value": 234.8655,
+      "unit": "km",
+      "received_at": "2026-09-29T12:00:00Z",
+      "age_s": 60
+    },
+    "SeatHeaterLeft": {
+      "value": 2,
+      "unit": null,
+      "received_at": "2026-09-29T12:00:00Z",
+      "age_s": 60
+    },
+    "SentryMode": {
+      "value": "SentryModeStateArmed",
+      "unit": null,
+      "received_at": "2026-09-29T12:00:00Z",
+      "age_s": 60
+    },
+    "TpmsPressureFl": {
+      "value": 2.9,
+      "unit": "bar",
+      "received_at": "2026-09-29T12:00:00Z",
+      "age_s": 60
+    },
+    "TpmsPressureFr": {
+      "value": 2.875,
+      "unit": "bar",
+      "received_at": "2026-09-29T12:00:00Z",
+      "age_s": 60
+    },
+    "TpmsPressureRl": {
+      "value": 2.9,
+      "unit": "bar",
+      "received_at": "2026-09-29T12:00:00Z",
+      "age_s": 60
+    },
+    "TpmsPressureRr": {
+      "value": 2.925,
+      "unit": "bar",
+      "received_at": "2026-09-29T12:00:00Z",
+      "age_s": 60
+    }
+  }
+}

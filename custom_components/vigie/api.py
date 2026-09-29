@@ -3,10 +3,11 @@
 from __future__ import annotations
 
 from typing import Any
+from urllib.parse import urlsplit
 
 import aiohttp
 
-from .const import API_PREFIX
+from .const import API_PREFIX, SHORT_PREFIX
 
 REQUEST_TIMEOUT = 20
 
@@ -62,11 +63,21 @@ class VigieNotFoundError(VigieError):
 
 
 def normalize_url(url: str) -> str:
-    """Return the instance base URL without trailing slash nor /api/v1."""
+    """Return the instance base URL without trailing slash nor /api/v1 (or /v1 on an api. host)."""
     url = url.strip().rstrip("/")
     if url.endswith(API_PREFIX):
         url = url[: -len(API_PREFIX)]
+    elif url.endswith(SHORT_PREFIX) and urlsplit(url).netloc.startswith("api."):
+        url = url[: -len(SHORT_PREFIX)]
     return url
+
+
+def app_url(base_url: str) -> str:
+    """Web app address for a base URL: https://api.iodek.fr -> https://iodek.fr (the API host has no pages)."""
+    parts = urlsplit(base_url)
+    if parts.netloc.startswith("api."):
+        return f"{parts.scheme}://{parts.netloc[4:]}"
+    return base_url
 
 
 class VigieClient:

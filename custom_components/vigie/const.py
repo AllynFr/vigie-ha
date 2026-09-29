@@ -1,4 +1,4 @@
-"""Constants for the Vigie integration."""
+"""Constants for the ioDek integration (domain kept as `vigie` so existing installs keep working)."""
 
 from __future__ import annotations
 
@@ -8,8 +8,10 @@ from typing import Final
 DOMAIN: Final = "vigie"
 MANUFACTURER: Final = "Tesla"
 
-DEFAULT_URL: Final = "https://vigie.allyn.fr"
+DEFAULT_URL: Final = "https://api.iodek.fr"
+# The API answers under /api/v1 on every host (api.iodek.fr also serves /v1).
 API_PREFIX: Final = "/api/v1"
+SHORT_PREFIX: Final = "/v1"
 
 CONF_VEHICLES: Final = "vehicles"
 CONF_ABILITIES: Final = "abilities"

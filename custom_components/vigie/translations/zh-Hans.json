@@ -2,14 +2,14 @@
   "config": {
     "step": {
       "user": {
-        "title": "连接 Vigie",
-        "description": "在 Vigie 的“账户 → API 密钥”中创建密钥。必须包含读取权限；如需控制车辆，请添加充电、舒适、门禁或信号权限。",
+        "title": "连接 ioDek",
+        "description": "在 ioDek 的“账户 → API 密钥”中创建密钥。必须包含读取权限；如需控制车辆，请添加充电、舒适、门禁或信号权限。",
         "data": {
-          "url": "Vigie 地址",
+          "url": "ioDek 地址",
           "api_key": "API 密钥"
         },
         "data_description": {
-          "url": "除非使用其他 Vigie 实例，否则保留默认值。",
+          "url": "除非使用其他 ioDek 实例，否则保留默认值。",
           "api_key": "以 vigie_ 开头（仅在创建时显示一次）。"
         }
       },
@@ -22,7 +22,7 @@
       },
       "reauth_confirm": {
         "title": "新 API 密钥",
-        "description": "Vigie（{url}）拒绝了该密钥（已撤销或过期）。请输入新密钥。",
+        "description": "ioDek（{url}）拒绝了该密钥（已撤销或过期）。请输入新密钥。",
         "data": {
           "api_key": "API 密钥"
         }
@@ -31,15 +31,15 @@
     "error": {
       "invalid_auth": "密钥无效、已过期或已撤销。",
       "missing_read": "此密钥没有读取权限。",
-      "cannot_connect": "无法通过此地址连接 Vigie。",
+      "cannot_connect": "无法通过此地址连接 ioDek。",
       "rate_limited": "请求过多，请一分钟后再试。",
-      "no_vehicles": "此 Vigie 账户下没有车辆。",
+      "no_vehicles": "此 ioDek 账户下没有车辆。",
       "no_selection": "请至少选择一辆车。",
       "invalid_url": "地址必须以 https:// 开头。",
       "unknown": "意外错误。"
     },
     "abort": {
-      "already_configured": "此 Vigie 账户已配置。",
+      "already_configured": "此 ioDek 账户已配置。",
       "reauth_successful": "密钥已更新。",
       "wrong_account": "此密钥属于其他账户：看不到任何已配置的车辆。"
     }
@@ -47,14 +47,14 @@
   "options": {
     "step": {
       "init": {
-        "title": "Vigie 选项",
+        "title": "ioDek 选项",
         "data": {
           "scan_interval": "更新间隔",
           "signal_buttons": "鸣笛和闪灯按钮"
         },
         "data_description": {
           "scan_interval": "30 至 300 秒。读取免费；每个密钥每分钟最多 60 次。",
-          "signal_buttons": "仅当密钥具有信号权限时开启。Vigie 无法在不鸣笛的情况下检测该权限。"
+          "signal_buttons": "仅当密钥具有信号权限时开启。ioDek 无法在不鸣笛的情况下检测该权限。"
         }
       }
     }
@@ -150,6 +150,21 @@
       },
       "tyre_pressure_rear_right": {
         "name": "右后胎压"
+      },
+      "charge_time_remaining": {
+        "name": "充满还需"
+      },
+      "charge_end": {
+        "name": "充电结束时间"
+      },
+      "nav_distance_remaining": {
+        "name": "剩余距离"
+      },
+      "nav_arrival": {
+        "name": "预计到达时间"
+      },
+      "nav_battery_at_arrival": {
+        "name": "到达时电量"
       },
       "last_seen": {
         "name": "最后接收时间"
@@ -301,7 +316,7 @@
   "services": {
     "refresh": {
       "name": "刷新",
-      "description": "立即从 Vigie 读取最新数据。免费，不会唤醒车辆。",
+      "description": "立即从 ioDek 读取最新数据。免费，不会唤醒车辆。",
       "fields": {
         "device_id": {
           "name": "车辆",
@@ -312,10 +327,10 @@
   },
   "exceptions": {
     "invalid_auth": {
-      "message": "Vigie 拒绝了 API 密钥。"
+      "message": "ioDek 拒绝了 API 密钥。"
     },
     "rate_limited": {
-      "message": "已达到 Vigie 限制，请稍后再试。"
+      "message": "已达到 ioDek 限制，请稍后再试。"
     },
     "vehicle_not_found": {
       "message": "使用此密钥已看不到该车辆。"
@@ -324,7 +339,7 @@
       "message": "该密钥已没有读取权限。"
     },
     "update_failed": {
-      "message": "无法连接 Vigie（{error}）。"
+      "message": "无法连接 ioDek（{error}）。"
     },
     "vehicle_asleep": {
       "message": "车辆处于休眠状态。请先按“唤醒”（每小时 3 次）。"
@@ -333,7 +348,7 @@
       "message": "API 密钥没有执行此命令的权限：{message}"
     },
     "option_disabled": {
-      "message": "Vigie 中该车辆的此选项已关闭：{message}"
+      "message": "ioDek 中该车辆的此选项已关闭：{message}"
     },
     "command_failed": {
       "message": "命令被拒绝：{message}"
