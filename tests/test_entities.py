@@ -361,3 +361,11 @@ async def test_navigation_sensors_need_location(hass: HomeAssistant, vigie: Fake
     entry = await _setup(hass)
     assert "nav_arrival" not in _entities(hass, entry)
     assert "charge_time_remaining" in _entities(hass, entry)
+
+
+async def test_battery_level_uses_the_most_recent_of_soc_and_battery_level(hass: HomeAssistant, vigie: FakeVigie) -> None:
+    vigie.state["values"]["BatteryLevel"] = {"value": 47.6, "unit": "%", "received_at": "2026-09-29T09:00:00Z", "age_s": 10800}
+    vigie.state["values"]["Soc"] = {"value": 66.0, "unit": "%", "received_at": "2026-09-29T12:19:00Z", "age_s": 60}
+    vigie.register()
+    entry = await _setup(hass)
+    assert _state(hass, entry, "battery_level").state == "66.0"

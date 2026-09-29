@@ -71,9 +71,15 @@ def _battery(name: str) -> dict[str, Any]:
 
 
 def _battery_level(data: VigieData) -> float | None:
-    v = num(data, "BatteryLevel")
-    if v is None:
-        v = num(data, "Soc")
+    """Most recent of BatteryLevel and Soc (ioDek profiles no longer request BatteryLevel: its last value can be old)."""
+    candidates = []
+    for name in ("Soc", "BatteryLevel"):
+        item = data.values.get(name)
+        if isinstance(item, dict) and num(data, name) is not None:
+            candidates.append((item.get("age_s") if item.get("age_s") is not None else 10**9, name))
+    if not candidates:
+        return None
+    v = num(data, min(candidates)[1])
     return round(v, 1) if v is not None else None
 
 
