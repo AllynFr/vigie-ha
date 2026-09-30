@@ -28,10 +28,10 @@
       "sentry": { "default": "mdi:cctv-off", "state": { "on": "mdi:cctv" } },
       "frunk": { "default": "mdi:car-select" },
       "trunk": { "default": "mdi:car-back" },
-      "fast_charger": { "default": "mdi:ev-plug-ccs2" }
+      "fast_charger": { "default": "mdi:ev-station" }
     },
     "switch": {
-      "charge": { "default": "mdi:ev-station" },
+      "charge": { "default": "mdi:ev-plug-type2" },
       "sentry_mode": { "default": "mdi:cctv-off", "state": { "on": "mdi:cctv" } },
       "steering_wheel_heater": { "default": "mdi:steering" }
     },
@@ -42,9 +42,9 @@
     "button": {
       "open_frunk": { "default": "mdi:car-select" },
       "actuate_trunk": { "default": "mdi:car-back" },
-      "honk": { "default": "mdi:bullhorn" },
+      "honk": { "default": "mdi:volume-high" },
       "flash_lights": { "default": "mdi:car-light-high" },
-      "wake": { "default": "mdi:sleep-off" }
+      "wake": { "default": "mdi:power" }
     },
     "select": {
       "seat_heater_left": { "default": "mdi:car-seat-heater" },
