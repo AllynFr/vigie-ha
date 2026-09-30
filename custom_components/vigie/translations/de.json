@@ -50,13 +50,25 @@
         "title": "ioDek-Optionen",
         "data": {
           "scan_interval": "Aktualisierungsintervall",
-          "signal_buttons": "Tasten Hupe und Lichthupe"
+          "signal_buttons": "Tasten Hupe und Lichthupe",
+          "location_entity": "An ioDek gesendete Position (Abwesenheitsmodus der Klimatisierung)"
         },
         "data_description": {
           "scan_interval": "30 bis 300 Sekunden. Lesezugriffe sind kostenlos; Grenze 60 pro Minute und Schlüssel.",
-          "signal_buttons": "Nur aktivieren, wenn der Schlüssel das Signalrecht hat. ioDek kann es nicht prüfen, ohne zu hupen."
+          "signal_buttons": "Nur aktivieren, wenn der Schlüssel das Signalrecht hat. ioDek kann es nicht prüfen, ohne zu hupen.",
+          "location_entity": "Eine Person oder ein Geräte-Tracker. Leer lassen, um nichts zu senden. ioDek speichert nur die letzte Position, höchstens 24 h. Der Schlüssel braucht das Positionsrecht."
         }
       }
+    }
+  },
+  "issues": {
+    "location_ability_missing": {
+      "title": "ioDek lehnt die Position ab",
+      "description": "Dem API-Schlüssel fehlt das Positionsrecht, die Position von {entity} wird nicht mehr gesendet. Recht in ioDek hinzufügen (Konto → API-Schlüssel), dann die Integration neu laden oder ihre Optionen ändern."
+    },
+    "location_disabled": {
+      "title": "Position in ioDek deaktiviert",
+      "description": "Die Nutzung Ihrer Position ist in der ioDek-App deaktiviert, die Position von {entity} wird nicht mehr gesendet. In ioDek wieder aktivieren und die Integration neu laden, oder die Entität in den Optionen entfernen."
     }
   },
   "entity": {

@@ -50,13 +50,25 @@
         "title": "ioDek options",
         "data": {
           "scan_interval": "Update interval",
-          "signal_buttons": "Horn and flash buttons"
+          "signal_buttons": "Horn and flash buttons",
+          "location_entity": "Position sent to ioDek (away mode for climate)"
         },
         "data_description": {
           "scan_interval": "30 to 300 seconds. Reads are free; the limit is 60 per minute per key.",
-          "signal_buttons": "Turn on only if the key has the signal permission. ioDek cannot report it without sounding the horn."
+          "signal_buttons": "Turn on only if the key has the signal permission. ioDek cannot report it without sounding the horn.",
+          "location_entity": "A person or device tracker. Leave empty to send nothing. ioDek keeps only the last position, for 24 h at most. The key needs the position permission."
         }
       }
+    }
+  },
+  "issues": {
+    "location_ability_missing": {
+      "title": "ioDek refuses the position",
+      "description": "The API key lacks the position permission, so the position of {entity} is no longer sent. Add the permission to the key in ioDek (Account → API keys), then reload the integration or change its options."
+    },
+    "location_disabled": {
+      "title": "Position turned off in ioDek",
+      "description": "The use of your position is turned off in the ioDek app, so the position of {entity} is no longer sent. Turn it back on in ioDek, then reload the integration, or clear the entity in the options."
     }
   },
   "entity": {

@@ -13,6 +13,8 @@ from homeassistant.core import callback
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from homeassistant.helpers.selector import (
     BooleanSelector,
+    EntitySelector,
+    EntitySelectorConfig,
     NumberSelector,
     NumberSelectorConfig,
     NumberSelectorMode,
@@ -39,12 +41,14 @@ from .const import (
     ABILITY_PROBES,
     ABILITY_READ,
     CONF_ABILITIES,
+    CONF_LOCATION_ENTITY,
     CONF_SCAN_INTERVAL,
     CONF_SIGNAL_BUTTONS,
     CONF_VEHICLES,
     DEFAULT_SCAN_INTERVAL,
     DEFAULT_URL,
     DOMAIN,
+    LOCATION_DOMAINS,
     MAX_SCAN_INTERVAL,
     MIN_SCAN_INTERVAL,
 )
@@ -190,16 +194,17 @@ class VigieConfigFlow(ConfigFlow, domain=DOMAIN):
 
 
 class VigieOptionsFlow(OptionsFlow):
-    """Polling interval and signal buttons."""
+    """Polling interval, signal buttons and position sent to ioDek."""
 
     async def async_step_init(self, user_input: dict[str, Any] | None = None) -> ConfigFlowResult:
         if user_input is not None:
-            return self.async_create_entry(
-                data={
-                    CONF_SCAN_INTERVAL: int(user_input[CONF_SCAN_INTERVAL]),
-                    CONF_SIGNAL_BUTTONS: bool(user_input.get(CONF_SIGNAL_BUTTONS, False)),
-                }
-            )
+            data: dict[str, Any] = {
+                CONF_SCAN_INTERVAL: int(user_input[CONF_SCAN_INTERVAL]),
+                CONF_SIGNAL_BUTTONS: bool(user_input.get(CONF_SIGNAL_BUTTONS, False)),
+            }
+            if location_entity := user_input.get(CONF_LOCATION_ENTITY):
+                data[CONF_LOCATION_ENTITY] = location_entity
+            return self.async_create_entry(data=data)
         options = self.config_entry.options
         schema = vol.Schema(
             {
@@ -213,6 +218,10 @@ class VigieOptionsFlow(OptionsFlow):
                     )
                 ),
                 vol.Required(CONF_SIGNAL_BUTTONS, default=options.get(CONF_SIGNAL_BUTTONS, False)): BooleanSelector(),
+                # Optional and empty by default: nothing is sent without a choice.
+                vol.Optional(
+                    CONF_LOCATION_ENTITY, description={"suggested_value": options.get(CONF_LOCATION_ENTITY)}
+                ): EntitySelector(EntitySelectorConfig(domain=list(LOCATION_DOMAINS))),
             }
         )
         return self.async_show_form(step_id="init", data_schema=schema)

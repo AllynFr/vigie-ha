@@ -50,13 +50,25 @@
         "title": "Options d'ioDek",
         "data": {
           "scan_interval": "Intervalle d'actualisation",
-          "signal_buttons": "Boutons klaxon et appel de phares"
+          "signal_buttons": "Boutons klaxon et appel de phares",
+          "location_entity": "Position à envoyer à ioDek (mode éloignement de la climatisation)"
         },
         "data_description": {
           "scan_interval": "De 30 à 300 secondes. Les lectures sont gratuites ; limite de 60 par minute et par clé.",
-          "signal_buttons": "À activer seulement si la clé a le droit signal. ioDek ne peut pas le vérifier sans klaxonner."
+          "signal_buttons": "À activer seulement si la clé a le droit signal. ioDek ne peut pas le vérifier sans klaxonner.",
+          "location_entity": "Une personne ou un suivi d'appareil. Laissez vide pour ne rien envoyer. ioDek ne garde que la dernière position, 24 h au plus. La clé doit avoir le droit position."
         }
       }
+    }
+  },
+  "issues": {
+    "location_ability_missing": {
+      "title": "ioDek refuse la position",
+      "description": "La clé API n'a pas le droit position : la position de {entity} n'est plus envoyée. Ajoutez ce droit à la clé dans ioDek (Compte → Clés API), puis rechargez l'intégration ou modifiez ses options."
+    },
+    "location_disabled": {
+      "title": "Position désactivée dans ioDek",
+      "description": "L'usage de votre position est désactivé dans l'application ioDek : la position de {entity} n'est plus envoyée. Réactivez-le dans ioDek puis rechargez l'intégration, ou retirez l'entité dans les options."
     }
   },
   "entity": {

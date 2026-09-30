@@ -8,7 +8,13 @@ from homeassistant import config_entries
 from homeassistant.core import HomeAssistant
 from homeassistant.data_entry_flow import FlowResultType
 
-from custom_components.vigie.const import CONF_ABILITIES, CONF_SCAN_INTERVAL, CONF_SIGNAL_BUTTONS, DOMAIN
+from custom_components.vigie.const import (
+    CONF_ABILITIES,
+    CONF_LOCATION_ENTITY,
+    CONF_SCAN_INTERVAL,
+    CONF_SIGNAL_BUTTONS,
+    DOMAIN,
+)
 
 from .conftest import API, KEY, URL, FakeVigie, make_entry
 
@@ -160,3 +166,28 @@ async def test_options_flow(hass: HomeAssistant, vigie: FakeVigie) -> None:
     assert entry.options == {CONF_SCAN_INTERVAL: 120, CONF_SIGNAL_BUTTONS: True}
     coordinator = entry.runtime_data.coordinators[1]
     assert coordinator.update_interval.total_seconds() == 120
+
+
+async def test_options_flow_location_entity(hass: HomeAssistant, vigie: FakeVigie) -> None:
+    vigie.mock.post(f"{API}/me/location", json={"ok": True})
+    entry = make_entry()
+    entry.add_to_hass(hass)
+    assert await hass.config_entries.async_setup(entry.entry_id)
+    await hass.async_block_till_done()
+    result = await hass.config_entries.options.async_init(entry.entry_id)
+    result = await hass.config_entries.options.async_configure(
+        result["flow_id"], {CONF_SCAN_INTERVAL: 60, CONF_SIGNAL_BUTTONS: False, CONF_LOCATION_ENTITY: "device_tracker.phone"}
+    )
+    assert result["type"] is FlowResultType.CREATE_ENTRY
+    await hass.async_block_till_done()
+    assert entry.options[CONF_LOCATION_ENTITY] == "device_tracker.phone"
+    assert entry.runtime_data.location.entity_id == "device_tracker.phone"
+
+    # Clearing the field stops the sending.
+    result = await hass.config_entries.options.async_init(entry.entry_id)
+    result = await hass.config_entries.options.async_configure(
+        result["flow_id"], {CONF_SCAN_INTERVAL: 60, CONF_SIGNAL_BUTTONS: False}
+    )
+    await hass.async_block_till_done()
+    assert CONF_LOCATION_ENTITY not in entry.options
+    assert entry.runtime_data.location is None

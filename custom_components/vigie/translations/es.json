@@ -50,13 +50,25 @@
         "title": "Opciones de ioDek",
         "data": {
           "scan_interval": "Intervalo de actualización",
-          "signal_buttons": "Botones de claxon y ráfaga"
+          "signal_buttons": "Botones de claxon y ráfaga",
+          "location_entity": "Posición enviada a ioDek (modo alejamiento de la climatización)"
         },
         "data_description": {
           "scan_interval": "De 30 a 300 segundos. Las lecturas son gratuitas; límite de 60 por minuto y clave.",
-          "signal_buttons": "Actívelo solo si la clave tiene el permiso de señal. ioDek no puede comprobarlo sin tocar el claxon."
+          "signal_buttons": "Actívelo solo si la clave tiene el permiso de señal. ioDek no puede comprobarlo sin tocar el claxon.",
+          "location_entity": "Una persona o un rastreador de dispositivo. Déjelo vacío para no enviar nada. ioDek solo guarda la última posición, 24 h como máximo. La clave necesita el permiso de posición."
         }
       }
+    }
+  },
+  "issues": {
+    "location_ability_missing": {
+      "title": "ioDek rechaza la posición",
+      "description": "La clave API no tiene el permiso de posición: la posición de {entity} ya no se envía. Añada el permiso a la clave en ioDek (Cuenta → Claves API) y recargue la integración o cambie sus opciones."
+    },
+    "location_disabled": {
+      "title": "Posición desactivada en ioDek",
+      "description": "El uso de su posición está desactivado en la app ioDek: la posición de {entity} ya no se envía. Actívelo de nuevo en ioDek y recargue la integración, o quite la entidad en las opciones."
     }
   },
   "entity": {

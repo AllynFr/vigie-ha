@@ -18,6 +18,7 @@ from .api import VigieAuthError, VigieClient, VigieError
 from .const import (
     ABILITY_SIGNAL,
     CONF_ABILITIES,
+    CONF_LOCATION_ENTITY,
     CONF_SCAN_INTERVAL,
     CONF_SIGNAL_BUTTONS,
     CONF_VEHICLES,
@@ -28,6 +29,7 @@ from .const import (
 )
 from .coordinator import VigieCoordinator
 from .entity import vehicle_key
+from .location import LocationReporter
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -59,6 +61,7 @@ class VigieRuntimeData:
     # (the signal ability cannot be probed without honking).
     abilities_known: bool = False
     signal_buttons: bool = False
+    location: LocationReporter | None = None
 
     def can(self, coordinator: VigieCoordinator, ability: str) -> bool:
         """A control exists only if the key has the ability AND the car option is on."""
@@ -138,6 +141,13 @@ async def async_setup_entry(hass: HomeAssistant, entry: VigieConfigEntry) -> boo
     )
     entry.async_on_unload(entry.add_update_listener(_async_options_updated))
     await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
+
+    if location_entity := entry.options.get(CONF_LOCATION_ENTITY):
+        reporter = LocationReporter(hass, entry, client, location_entity)
+        entry.runtime_data.location = reporter
+        # Stopped on unload, hence on the reload that follows an options change.
+        entry.async_on_unload(reporter.async_stop)
+        reporter.async_start()
     return True
 
 

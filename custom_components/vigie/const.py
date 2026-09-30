@@ -17,6 +17,7 @@ CONF_VEHICLES: Final = "vehicles"
 CONF_ABILITIES: Final = "abilities"
 CONF_SCAN_INTERVAL: Final = "scan_interval"
 CONF_SIGNAL_BUTTONS: Final = "signal_buttons"
+CONF_LOCATION_ENTITY: Final = "location_entity"
 
 DEFAULT_SCAN_INTERVAL: Final = 60
 MIN_SCAN_INTERVAL: Final = 30
@@ -61,3 +62,11 @@ SEAT_FIELDS: Final = {
 }
 
 SERVICE_REFRESH: Final = "refresh"
+
+# User position sent to ioDek for the "away" mode of scheduled climate.
+LOCATION_DOMAINS: Final = ("person", "device_tracker")
+LOCATION_SOURCE: Final = "home_assistant"
+LOCATION_MIN_MOVE_M: Final = 200.0
+LOCATION_MIN_INTERVAL: Final = timedelta(minutes=1)
+# The server keeps a Home Assistant position fresh for 6 h: resend every 3 h.
+LOCATION_REFRESH: Final = timedelta(hours=3)

@@ -50,13 +50,25 @@
         "title": "Opzioni di ioDek",
         "data": {
           "scan_interval": "Intervallo di aggiornamento",
-          "signal_buttons": "Pulsanti clacson e lampeggio"
+          "signal_buttons": "Pulsanti clacson e lampeggio",
+          "location_entity": "Posizione inviata a ioDek (modalità lontananza della climatizzazione)"
         },
         "data_description": {
           "scan_interval": "Da 30 a 300 secondi. Le letture sono gratuite; limite di 60 al minuto per chiave.",
-          "signal_buttons": "Attiva solo se la chiave ha il permesso segnale. ioDek non può verificarlo senza suonare il clacson."
+          "signal_buttons": "Attiva solo se la chiave ha il permesso segnale. ioDek non può verificarlo senza suonare il clacson.",
+          "location_entity": "Una persona o un tracker di dispositivo. Lascia vuoto per non inviare nulla. ioDek conserva solo l'ultima posizione, per 24 h al massimo. La chiave deve avere il permesso posizione."
         }
       }
+    }
+  },
+  "issues": {
+    "location_ability_missing": {
+      "title": "ioDek rifiuta la posizione",
+      "description": "La chiave API non ha il permesso posizione: la posizione di {entity} non viene più inviata. Aggiungi il permesso alla chiave in ioDek (Account → Chiavi API), poi ricarica l'integrazione o modificane le opzioni."
+    },
+    "location_disabled": {
+      "title": "Posizione disattivata in ioDek",
+      "description": "L'uso della tua posizione è disattivato nell'app ioDek: la posizione di {entity} non viene più inviata. Riattivalo in ioDek e ricarica l'integrazione, oppure rimuovi l'entità nelle opzioni."
     }
   },
   "entity": {

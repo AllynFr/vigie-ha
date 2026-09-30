@@ -43,11 +43,23 @@ Copiez `custom_components/vigie` dans le dossier `config/custom_components/` de 
 2. Dans Home Assistant : **Paramètres → Appareils et services → Ajouter une intégration → ioDek**.
 3. Adresse (par défaut `https://api.iodek.fr`) et clé, puis choix des voitures.
 
-Options : intervalle d'actualisation (30 à 300 s, 60 par défaut) et boutons klaxon / appel de phares.
+Options : intervalle d'actualisation (30 à 300 s, 60 par défaut), boutons klaxon / appel de phares, position envoyée à ioDek (voir plus bas).
 
 Une commande n'existe que si la clé a le droit **et** si l'option correspondante est active sur la voiture (ioDek → Réglages de la voiture). Si vous changez ces options dans ioDek, l'intégration se recharge d'elle-même.
 
 Le droit **signal** ne peut pas être détecté sans klaxonner : cochez l'option « Boutons klaxon et appel de phares » si votre clé l'a.
+
+## Position pour le mode éloignement
+
+La programmation de la climatisation dans ioDek peut ne pas se déclencher quand vous êtes loin de la voiture. Pour cela, ioDek a besoin de votre position, et Home Assistant la connaît souvent mieux que le téléphone.
+
+Dans les options de l'intégration, choisissez une entité `person` ou `device_tracker`. Laissé vide (par défaut), rien n'est envoyé.
+
+- Envoi à la première position connue, puis dès que vous vous êtes déplacé de plus de 200 m, au plus une fois par minute.
+- Nouvel envoi toutes les 3 h sans déplacement, pour que la position reste à jour côté ioDek.
+- Les états sans coordonnées (inconnu, indisponible) sont ignorés.
+- La clé API doit avoir le droit **position** (ioDek → Compte → Clés API). Sans ce droit, ou si l'usage de la position est désactivé dans l'application, l'intégration arrête d'envoyer et le signale dans **Réparations**, jusqu'au prochain changement d'options ou redémarrage.
+- ioDek ne garde que la dernière position, sans historique. Elle est jugée à jour 6 h et effacée au bout de 24 h. Les coordonnées n'apparaissent ni dans les journaux ni dans les diagnostics.
 
 ## Coûts et limites
 
@@ -81,6 +93,8 @@ Tesla sends a field only when it changes, so some entities appear once the car h
 **Install**: HACS custom repository (category Integration), or copy `custom_components/vigie` to `config/custom_components/` and restart.
 
 **Setup**: create a key in ioDek (Account → API keys; `lecture` is required), then add the **ioDek** integration in Home Assistant with the address `https://api.iodek.fr`. Options: update interval 30-300 s (default 60).
+
+**Position for away mode**: in the options, pick a `person` or `device_tracker` entity (empty by default, nothing sent). Its position goes to ioDek so scheduled climate can skip when you are far from the car: on the first known position, after a move of more than 200 m (at most once a minute), and every 3 h otherwise. The key needs the **position** permission. ioDek keeps only the last position, fresh for 6 h and deleted after 24 h.
 
 **Costs**: reads are free and never wake the car. Commands and wake-ups use ioDek credits. Commands never wake the car; press **Wake up** first (3 per hour). API limits: 60 reads and 10 commands per minute per key.
 

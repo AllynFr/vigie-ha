@@ -168,6 +168,10 @@ class VigieClient:
     async def wake(self, vehicle_id: int) -> dict[str, Any]:
         return await self._request("POST", f"/vehicles/{vehicle_id}/wake")
 
+    async def send_location(self, payload: dict[str, Any]) -> dict[str, Any]:
+        """POST /me/location: the user's last position (one per user on the server)."""
+        return await self._request("POST", "/me/location", json=payload)
+
     async def probe_ability(self, vehicle_id: int, ability: str, command: str) -> bool | None:
         """Tell whether the key holds `ability` without reaching the car.
 
