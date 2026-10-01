@@ -43,7 +43,7 @@ Copiez `custom_components/vigie` dans le dossier `config/custom_components/` de 
 2. Dans Home Assistant : **Paramètres → Appareils et services → Ajouter une intégration → ioDek**.
 3. Adresse (par défaut `https://api.iodek.fr`) et clé, puis choix des voitures.
 
-Options : intervalle d'actualisation (30 à 300 s, 60 par défaut), boutons klaxon / appel de phares, position envoyée à ioDek (voir plus bas).
+Options : intervalle d'actualisation (30 à 300 s, 60 par défaut), boutons klaxon / appel de phares, position envoyée à ioDek, entités pour les boutons du tableau de bord ioDek (voir plus bas).
 
 Une commande n'existe que si la clé a le droit **et** si l'option correspondante est active sur la voiture (ioDek → Réglages de la voiture). Si vous changez ces options dans ioDek, l'intégration se recharge d'elle-même.
 
@@ -60,6 +60,33 @@ Dans les options de l'intégration, choisissez une entité `person` ou `device_t
 - Les états sans coordonnées (inconnu, indisponible) sont ignorés.
 - La clé API doit avoir le droit **position** (ioDek → Compte → Clés API). Sans ce droit, ou si l'usage de la position est désactivé dans l'application, l'intégration arrête d'envoyer et le signale dans **Réparations**, jusqu'au prochain changement d'options ou redémarrage.
 - ioDek ne garde que la dernière position, sans historique. Elle est jugée à jour 6 h et effacée au bout de 24 h. Les coordonnées n'apparaissent ni dans les journaux ni dans les diagnostics.
+
+## Boutons du tableau de bord ioDek
+
+Le tableau de bord d'ioDek peut afficher des boutons qui actionnent des entités de Home Assistant : ouvrir le portail, lancer un script, allumer une lumière…
+
+1. Dans ioDek : **Compte → Clés API**, ajoutez le droit **domotique** à la clé utilisée par Home Assistant.
+2. Dans Home Assistant : options de l'intégration ioDek, champ « Entités pour les boutons du tableau de bord ioDek ». Choisissez les entités à exposer. Laissé vide (par défaut), rien n'est exposé.
+
+Rien n'est à ouvrir sur Internet : c'est Home Assistant qui se connecte à ioDek (WebSocket sortant) et reçoit les ordres. ioDek ne détient aucun jeton Home Assistant.
+
+Domaines et services permis (liste fermée, vérifiée par ioDek et par l'intégration) :
+
+| Domaine | Services |
+|---|---|
+| `script`, `scene` | `turn_on` |
+| `button`, `input_button` | `press` |
+| `automation` | `trigger` |
+| `switch`, `input_boolean`, `light`, `fan` | `toggle`, `turn_on`, `turn_off` |
+| `cover` | `toggle`, `open_cover`, `close_cover`, `stop_cover` |
+| `lock` | `lock`, `unlock` |
+
+- ioDek demande une confirmation avant d'actionner une serrure, un volet ou un portail.
+- L'intégration n'exécute que les entités exposées et les services de la liste, même si on lui demande autre chose. Un ordre périmé ou déjà reçu est ignoré, et chaque ordre fait l'objet d'un compte rendu à ioDek (réussi, refusé, délai dépassé, erreur).
+- Le nom, l'icône et l'état des entités exposées sont envoyés à ioDek au démarrage, toutes les 6 h et à chaque changement d'état (regroupés par seconde).
+- Chaque ordre exécuté est noté dans le journal (« ioDek : toggle sur light.salon »).
+- Sans le droit **domotique**, ou si votre formule ioDek ne comprend pas l'API, l'intégration arrête le pont et le signale dans **Réparations**, jusqu'au prochain changement d'options ou redémarrage.
+- Vider la liste retire les boutons côté ioDek.
 
 ## Coûts et limites
 
@@ -92,9 +119,11 @@ Tesla sends a field only when it changes, so some entities appear once the car h
 
 **Install**: HACS custom repository (category Integration), or copy `custom_components/vigie` to `config/custom_components/` and restart.
 
-**Setup**: create a key in ioDek (Account → API keys; `lecture` is required), then add the **ioDek** integration in Home Assistant with the address `https://api.iodek.fr`. Options: update interval 30-300 s (default 60).
+**Setup**: create a key in ioDek (Account → API keys; `lecture` is required), then add the **ioDek** integration in Home Assistant with the address `https://api.iodek.fr`. Options: update interval 30-300 s (default 60), horn and lights buttons, position, dashboard buttons.
 
 **Position for away mode**: in the options, pick a `person` or `device_tracker` entity (empty by default, nothing sent). Its position goes to ioDek so scheduled climate can skip when you are far from the car: on the first known position, after a move of more than 200 m (at most once a minute), and every 3 h otherwise. The key needs the **position** permission. ioDek keeps only the last position, fresh for 6 h and deleted after 24 h.
+
+**Dashboard buttons**: ioDek's dashboard can show buttons that operate Home Assistant entities (open the gate, run a script, turn on a light). Add the **domotique** (home automation) permission to the key in ioDek, then pick the entities in the integration options (empty by default: nothing exposed). Nothing has to be opened to the Internet: Home Assistant connects out to ioDek over a WebSocket and receives the orders; ioDek holds no Home Assistant token. Allowed domains and services (closed list, checked on both sides): `script`/`scene` `turn_on`; `button`/`input_button` `press`; `automation` `trigger`; `switch`/`input_boolean`/`light`/`fan` `toggle`, `turn_on`, `turn_off`; `cover` `toggle`, `open_cover`, `close_cover`, `stop_cover`; `lock` `lock`, `unlock`. ioDek asks for a confirmation before operating a lock, a cover or a gate. The integration runs only exposed entities and listed services, whatever it is asked, ignores expired or duplicate orders and reports each outcome to ioDek. Without the permission (or the plan), the bridge stops and a Repairs issue explains why.
 
 **Costs**: reads are free and never wake the car. Commands and wake-ups use ioDek credits. Commands never wake the car; press **Wake up** first (3 per hour). API limits: 60 reads and 10 commands per minute per key.
 

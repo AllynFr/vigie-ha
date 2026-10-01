@@ -15,6 +15,7 @@ from homeassistant.helpers.typing import ConfigType
 import voluptuous as vol
 
 from .api import VigieAuthError, VigieClient, VigieError
+from .bridge import DashboardBridge, exposed_entities
 from .const import (
     ABILITY_SIGNAL,
     CONF_ABILITIES,
@@ -62,6 +63,7 @@ class VigieRuntimeData:
     abilities_known: bool = False
     signal_buttons: bool = False
     location: LocationReporter | None = None
+    bridge: DashboardBridge | None = None
 
     def can(self, coordinator: VigieCoordinator, ability: str) -> bool:
         """A control exists only if the key has the ability AND the car option is on."""
@@ -148,6 +150,13 @@ async def async_setup_entry(hass: HomeAssistant, entry: VigieConfigEntry) -> boo
         # Stopped on unload, hence on the reload that follows an options change.
         entry.async_on_unload(reporter.async_stop)
         reporter.async_start()
+
+    # Dashboard buttons: nothing is exposed to ioDek without an explicit choice.
+    if exposed := exposed_entities(entry.options):
+        bridge = DashboardBridge(hass, entry, client, exposed)
+        entry.runtime_data.bridge = bridge
+        entry.async_on_unload(bridge.async_stop)
+        bridge.async_start()
     return True
 
 

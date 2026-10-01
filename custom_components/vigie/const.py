@@ -18,6 +18,7 @@ CONF_ABILITIES: Final = "abilities"
 CONF_SCAN_INTERVAL: Final = "scan_interval"
 CONF_SIGNAL_BUTTONS: Final = "signal_buttons"
 CONF_LOCATION_ENTITY: Final = "location_entity"
+CONF_EXPOSED_ENTITIES: Final = "exposed_entities"
 
 DEFAULT_SCAN_INTERVAL: Final = 60
 MIN_SCAN_INTERVAL: Final = 30
@@ -70,3 +71,39 @@ LOCATION_MIN_MOVE_M: Final = 200.0
 LOCATION_MIN_INTERVAL: Final = timedelta(minutes=1)
 # The server keeps a Home Assistant position fresh for 6 h: resend every 3 h.
 LOCATION_REFRESH: Final = timedelta(hours=3)
+
+# Dashboard buttons bridge: Home Assistant entities that ioDek dashboard buttons
+# may act on. Closed list, checked on both sides (ioDek and here).
+BRIDGE_SERVICES: Final[dict[str, tuple[str, ...]]] = {
+    "script": ("turn_on",),
+    "scene": ("turn_on",),
+    "button": ("press",),
+    "input_button": ("press",),
+    "automation": ("trigger",),
+    "switch": ("toggle", "turn_on", "turn_off"),
+    "input_boolean": ("toggle", "turn_on", "turn_off"),
+    "light": ("toggle", "turn_on", "turn_off"),
+    "fan": ("toggle", "turn_on", "turn_off"),
+    "cover": ("toggle", "open_cover", "close_cover", "stop_cover"),
+    "lock": ("lock", "unlock"),
+}
+BRIDGE_DOMAINS: Final = tuple(BRIDGE_SERVICES)
+BRIDGE_MAX_ENTITIES: Final = 100
+BRIDGE_NAME_MAX: Final = 80
+BRIDGE_STATE_MAX: Final = 40
+BRIDGE_MESSAGE_MAX: Final = 200
+# Pusher protocol (Laravel Reverb), in seconds.
+BRIDGE_ACTIVITY_TIMEOUT: Final = 20
+BRIDGE_PONG_TIMEOUT: Final = 10
+BRIDGE_ACTION_TIMEOUT: Final = 10
+BRIDGE_STATES_DELAY: Final = 1.0
+BRIDGE_REPUBLISH: Final = timedelta(hours=6)
+BRIDGE_RECONNECT_DELAYS: Final = (1, 2, 5, 10, 30, 60)
+# A connection that stayed up this long resets the reconnect delays.
+BRIDGE_STABLE_AFTER: Final = 300
+# Failed publication: retried after 60 s, then less and less often.
+BRIDGE_PUBLISH_RETRY_DELAYS: Final = (60, 120, 300, 600, 1800)
+# Publication accepted but no real-time channel on the server side.
+BRIDGE_NO_SOCKET_RETRY: Final = 300
+# Action ids remembered so that one order is run once only.
+BRIDGE_SEEN_ACTIONS: Final = 200

@@ -51,17 +51,27 @@
         "data": {
           "scan_interval": "Update interval",
           "signal_buttons": "Horn and flash buttons",
-          "location_entity": "Position sent to ioDek (away mode for climate)"
+          "location_entity": "Position sent to ioDek (away mode for climate)",
+          "exposed_entities": "Entities for the ioDek dashboard buttons"
         },
         "data_description": {
           "scan_interval": "30 to 300 seconds. Reads are free; the limit is 60 per minute per key.",
           "signal_buttons": "Turn on only if the key has the signal permission. ioDek cannot report it without sounding the horn.",
-          "location_entity": "A person or device tracker. Leave empty to send nothing. ioDek keeps only the last position, for 24 h at most. The key needs the position permission."
+          "location_entity": "A person or device tracker. Leave empty to send nothing. ioDek keeps only the last position, for 24 h at most. The key needs the position permission.",
+          "exposed_entities": "Entities that the ioDek dashboard buttons can operate. The key needs the home automation permission."
         }
       }
     }
   },
   "issues": {
+    "bridge_ability_missing": {
+      "title": "ioDek refuses the dashboard buttons",
+      "description": "The API key lacks the home automation permission, so the ioDek dashboard buttons can no longer operate Home Assistant. Add the home automation permission to the key in ioDek (Account → API keys), then reload the integration or change its options."
+    },
+    "bridge_plan_required": {
+      "title": "Dashboard buttons need an ioDek plan",
+      "description": "Your ioDek plan does not include API access, so the ioDek dashboard buttons can no longer operate Home Assistant. Change your plan in ioDek, then reload the integration or change its options."
+    },
     "location_ability_missing": {
       "title": "ioDek refuses the position",
       "description": "The API key lacks the position permission, so the position of {entity} is no longer sent. Add the permission to the key in ioDek (Account → API keys), then reload the integration or change its options."

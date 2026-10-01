@@ -51,17 +51,27 @@
         "data": {
           "scan_interval": "Intervalo de actualización",
           "signal_buttons": "Botones de claxon y ráfaga",
-          "location_entity": "Posición enviada a ioDek (modo alejamiento de la climatización)"
+          "location_entity": "Posición enviada a ioDek (modo alejamiento de la climatización)",
+          "exposed_entities": "Entidades para los botones del panel de ioDek"
         },
         "data_description": {
           "scan_interval": "De 30 a 300 segundos. Las lecturas son gratuitas; límite de 60 por minuto y clave.",
           "signal_buttons": "Actívelo solo si la clave tiene el permiso de señal. ioDek no puede comprobarlo sin tocar el claxon.",
-          "location_entity": "Una persona o un rastreador de dispositivo. Déjelo vacío para no enviar nada. ioDek solo guarda la última posición, 24 h como máximo. La clave necesita el permiso de posición."
+          "location_entity": "Una persona o un rastreador de dispositivo. Déjelo vacío para no enviar nada. ioDek solo guarda la última posición, 24 h como máximo. La clave necesita el permiso de posición.",
+          "exposed_entities": "Entidades que los botones del panel de ioDek pueden accionar. La clave necesita el permiso de domótica."
         }
       }
     }
   },
   "issues": {
+    "bridge_ability_missing": {
+      "title": "ioDek rechaza los botones del panel",
+      "description": "La clave API no tiene el permiso de domótica: los botones del panel de ioDek ya no pueden accionar Home Assistant. Añada el permiso de domótica a la clave en ioDek (Cuenta → Claves API) y recargue la integración o cambie sus opciones."
+    },
+    "bridge_plan_required": {
+      "title": "Botones del panel: se necesita un plan de ioDek",
+      "description": "Su plan de ioDek no incluye acceso a la API: los botones del panel de ioDek ya no pueden accionar Home Assistant. Cambie de plan en ioDek y recargue la integración o cambie sus opciones."
+    },
     "location_ability_missing": {
       "title": "ioDek rechaza la posición",
       "description": "La clave API no tiene el permiso de posición: la posición de {entity} ya no se envía. Añada el permiso a la clave en ioDek (Cuenta → Claves API) y recargue la integración o cambie sus opciones."

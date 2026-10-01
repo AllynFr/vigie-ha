@@ -7,7 +7,7 @@ import logging
 from typing import Any
 from urllib.parse import urlparse
 
-from homeassistant.config_entries import ConfigFlow, ConfigFlowResult, OptionsFlow
+from homeassistant.config_entries import ConfigEntryState, ConfigFlow, ConfigFlowResult, OptionsFlow
 from homeassistant.const import CONF_API_KEY, CONF_URL
 from homeassistant.core import callback
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
@@ -37,10 +37,13 @@ from .api import (
     VigieRateLimitError,
     normalize_url,
 )
+from .bridge import async_withdraw, exposed_entities
 from .const import (
     ABILITY_PROBES,
     ABILITY_READ,
+    BRIDGE_DOMAINS,
     CONF_ABILITIES,
+    CONF_EXPOSED_ENTITIES,
     CONF_LOCATION_ENTITY,
     CONF_SCAN_INTERVAL,
     CONF_SIGNAL_BUTTONS,
@@ -194,7 +197,7 @@ class VigieConfigFlow(ConfigFlow, domain=DOMAIN):
 
 
 class VigieOptionsFlow(OptionsFlow):
-    """Polling interval, signal buttons and position sent to ioDek."""
+    """Polling interval, signal buttons, position sent to ioDek and dashboard buttons."""
 
     async def async_step_init(self, user_input: dict[str, Any] | None = None) -> ConfigFlowResult:
         if user_input is not None:
@@ -204,6 +207,11 @@ class VigieOptionsFlow(OptionsFlow):
             }
             if location_entity := user_input.get(CONF_LOCATION_ENTITY):
                 data[CONF_LOCATION_ENTITY] = location_entity
+            if exposed := exposed_entities(user_input):
+                data[CONF_EXPOSED_ENTITIES] = exposed
+            elif exposed_entities(self.config_entry.options) and self.config_entry.state is ConfigEntryState.LOADED:
+                # No bridge will run any more: tell ioDek to remove the buttons.
+                self.hass.async_create_task(async_withdraw(self.hass, self.config_entry.runtime_data.client))
             return self.async_create_entry(data=data)
         options = self.config_entry.options
         schema = vol.Schema(
@@ -222,6 +230,10 @@ class VigieOptionsFlow(OptionsFlow):
                 vol.Optional(
                     CONF_LOCATION_ENTITY, description={"suggested_value": options.get(CONF_LOCATION_ENTITY)}
                 ): EntitySelector(EntitySelectorConfig(domain=list(LOCATION_DOMAINS))),
+                # Empty by default: no entity is exposed to the ioDek dashboard without a choice.
+                vol.Optional(
+                    CONF_EXPOSED_ENTITIES, description={"suggested_value": options.get(CONF_EXPOSED_ENTITIES)}
+                ): EntitySelector(EntitySelectorConfig(domain=list(BRIDGE_DOMAINS), multiple=True)),
             }
         )
         return self.async_show_form(step_id="init", data_schema=schema)

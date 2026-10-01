@@ -145,7 +145,8 @@ class VigieClient:
             raise VigieRateLimitError(message, code or "rate_limited", seconds)
         if status == 409 and code == "vehicle_asleep":
             raise VigieAsleepError(message, code, status)
-        if method == "POST" and status in (409, 422, 428, 502):
+        # Writes (commands, /ha/* routes): refusals with a stable code, not network errors.
+        if method in ("POST", "PUT") and status in (409, 422, 428, 502):
             raise VigieCommandError(message, code, status, data.get("reason"))
         raise VigieConnectionError(message or f"http_{status}", code, status)
 
@@ -171,6 +172,29 @@ class VigieClient:
     async def send_location(self, payload: dict[str, Any]) -> dict[str, Any]:
         """POST /me/location: the user's last position (one per user on the server)."""
         return await self._request("POST", "/me/location", json=payload)
+
+    async def publish_entities(self, payload: dict[str, Any]) -> dict[str, Any]:
+        """PUT /ha/entities: replace the list of entities exposed to the ioDek dashboard."""
+        return await self._request("PUT", "/ha/entities", json=payload)
+
+    async def send_states(self, states: list[dict[str, Any]]) -> dict[str, Any]:
+        """POST /ha/states: state changes of exposed entities (1 to 100)."""
+        return await self._request("POST", "/ha/states", json={"states": states})
+
+    async def socket_auth(self, socket_id: str, channel: str) -> dict[str, Any]:
+        """POST /ha/socket-auth: signature to subscribe to the private Pusher channel."""
+        return await self._request("POST", "/ha/socket-auth", json={"socket_id": socket_id, "channel_name": channel})
+
+    async def report_action(
+        self, action_id: int, ok: bool, error: str | None = None, message: str | None = None
+    ) -> dict[str, Any]:
+        """POST /ha/actions/{id}: outcome of an order received from the dashboard."""
+        body: dict[str, Any] = {"ok": ok}
+        if not ok:
+            body["error"] = error or "ha_error"
+            if message:
+                body["message"] = message
+        return await self._request("POST", f"/ha/actions/{int(action_id)}", json=body)
 
     async def probe_ability(self, vehicle_id: int, ability: str, command: str) -> bool | None:
         """Tell whether the key holds `ability` without reaching the car.

@@ -51,17 +51,27 @@
         "data": {
           "scan_interval": "Intervallo di aggiornamento",
           "signal_buttons": "Pulsanti clacson e lampeggio",
-          "location_entity": "Posizione inviata a ioDek (modalità lontananza della climatizzazione)"
+          "location_entity": "Posizione inviata a ioDek (modalità lontananza della climatizzazione)",
+          "exposed_entities": "Entità per i pulsanti della dashboard ioDek"
         },
         "data_description": {
           "scan_interval": "Da 30 a 300 secondi. Le letture sono gratuite; limite di 60 al minuto per chiave.",
           "signal_buttons": "Attiva solo se la chiave ha il permesso segnale. ioDek non può verificarlo senza suonare il clacson.",
-          "location_entity": "Una persona o un tracker di dispositivo. Lascia vuoto per non inviare nulla. ioDek conserva solo l'ultima posizione, per 24 h al massimo. La chiave deve avere il permesso posizione."
+          "location_entity": "Una persona o un tracker di dispositivo. Lascia vuoto per non inviare nulla. ioDek conserva solo l'ultima posizione, per 24 h al massimo. La chiave deve avere il permesso posizione.",
+          "exposed_entities": "Entità che i pulsanti della dashboard ioDek possono azionare. La chiave deve avere il permesso domotica."
         }
       }
     }
   },
   "issues": {
+    "bridge_ability_missing": {
+      "title": "ioDek rifiuta i pulsanti della dashboard",
+      "description": "La chiave API non ha il permesso domotica: i pulsanti della dashboard ioDek non possono più azionare Home Assistant. Aggiungi il permesso domotica alla chiave in ioDek (Account → Chiavi API), poi ricarica l'integrazione o modificane le opzioni."
+    },
+    "bridge_plan_required": {
+      "title": "Pulsanti della dashboard: serve un piano ioDek",
+      "description": "Il tuo piano ioDek non include l'accesso all'API: i pulsanti della dashboard ioDek non possono più azionare Home Assistant. Cambia piano in ioDek, poi ricarica l'integrazione o modificane le opzioni."
+    },
     "location_ability_missing": {
       "title": "ioDek rifiuta la posizione",
       "description": "La chiave API non ha il permesso posizione: la posizione di {entity} non viene più inviata. Aggiungi il permesso alla chiave in ioDek (Account → Chiavi API), poi ricarica l'integrazione o modificane le opzioni."

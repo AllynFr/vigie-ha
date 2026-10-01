@@ -51,17 +51,27 @@
         "data": {
           "scan_interval": "更新间隔",
           "signal_buttons": "鸣笛和闪灯按钮",
-          "location_entity": "发送给 ioDek 的位置（空调远离模式）"
+          "location_entity": "发送给 ioDek 的位置（空调远离模式）",
+          "exposed_entities": "ioDek 仪表板按钮可用的实体"
         },
         "data_description": {
           "scan_interval": "30 至 300 秒。读取免费；每个密钥每分钟最多 60 次。",
           "signal_buttons": "仅当密钥具有信号权限时开启。ioDek 无法在不鸣笛的情况下检测该权限。",
-          "location_entity": "选择一个人员或设备追踪器。留空则不发送。ioDek 只保存最后一个位置，最长 24 小时。密钥需要位置权限。"
+          "location_entity": "选择一个人员或设备追踪器。留空则不发送。ioDek 只保存最后一个位置，最长 24 小时。密钥需要位置权限。",
+          "exposed_entities": "ioDek 仪表板按钮可以操作的实体。密钥需要家居自动化权限。"
         }
       }
     }
   },
   "issues": {
+    "bridge_ability_missing": {
+      "title": "ioDek 拒绝了仪表板按钮",
+      "description": "API 密钥没有家居自动化权限，ioDek 仪表板按钮已无法操作 Home Assistant。请在 ioDek（账户 → API 密钥）中为密钥添加家居自动化权限，然后重新加载集成或修改其选项。"
+    },
+    "bridge_plan_required": {
+      "title": "仪表板按钮需要 ioDek 套餐",
+      "description": "您的 ioDek 套餐不包含 API 访问，ioDek 仪表板按钮已无法操作 Home Assistant。请在 ioDek 中更换套餐，然后重新加载集成或修改其选项。"
+    },
     "location_ability_missing": {
       "title": "ioDek 拒绝接收位置",
       "description": "API 密钥没有位置权限，{entity} 的位置已停止发送。请在 ioDek（账户 → API 密钥）中为密钥添加该权限，然后重新加载集成或修改其选项。"

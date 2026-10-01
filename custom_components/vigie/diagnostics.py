@@ -56,4 +56,5 @@ async def async_get_config_entry_diagnostics(hass: HomeAssistant, entry: VigieCo
         "abilities_known": runtime.abilities_known,
         "vehicles": vehicles,
         "location": async_redact_data(runtime.location.diagnostics(), REDACT_DATA) if runtime.location else None,
+        "bridge": runtime.bridge.diagnostics() if runtime.bridge else None,
     }

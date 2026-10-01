@@ -51,17 +51,27 @@
         "data": {
           "scan_interval": "Intervalle d'actualisation",
           "signal_buttons": "Boutons klaxon et appel de phares",
-          "location_entity": "Position à envoyer à ioDek (mode éloignement de la climatisation)"
+          "location_entity": "Position à envoyer à ioDek (mode éloignement de la climatisation)",
+          "exposed_entities": "Entités pour les boutons du tableau de bord ioDek"
         },
         "data_description": {
           "scan_interval": "De 30 à 300 secondes. Les lectures sont gratuites ; limite de 60 par minute et par clé.",
           "signal_buttons": "À activer seulement si la clé a le droit signal. ioDek ne peut pas le vérifier sans klaxonner.",
-          "location_entity": "Une personne ou un suivi d'appareil. Laissez vide pour ne rien envoyer. ioDek ne garde que la dernière position, 24 h au plus. La clé doit avoir le droit position."
+          "location_entity": "Une personne ou un suivi d'appareil. Laissez vide pour ne rien envoyer. ioDek ne garde que la dernière position, 24 h au plus. La clé doit avoir le droit position.",
+          "exposed_entities": "Entités que les boutons du tableau de bord ioDek peuvent actionner. La clé doit avoir le droit domotique."
         }
       }
     }
   },
   "issues": {
+    "bridge_ability_missing": {
+      "title": "ioDek refuse les boutons du tableau de bord",
+      "description": "La clé API n'a pas le droit domotique : les boutons du tableau de bord ioDek ne peuvent plus actionner Home Assistant. Ajoutez le droit domotique à la clé dans ioDek (Compte → Clés API), puis rechargez l'intégration ou modifiez ses options."
+    },
+    "bridge_plan_required": {
+      "title": "Boutons du tableau de bord : formule ioDek requise",
+      "description": "Votre formule ioDek n'inclut pas l'accès à l'API : les boutons du tableau de bord ioDek ne peuvent plus actionner Home Assistant. Changez de formule dans ioDek, puis rechargez l'intégration ou modifiez ses options."
+    },
     "location_ability_missing": {
       "title": "ioDek refuse la position",
       "description": "La clé API n'a pas le droit position : la position de {entity} n'est plus envoyée. Ajoutez ce droit à la clé dans ioDek (Compte → Clés API), puis rechargez l'intégration ou modifiez ses options."
