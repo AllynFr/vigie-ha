@@ -7,6 +7,11 @@ that Home Assistant opens itself: nothing has to be reachable from the Internet.
 An order is run only for an exposed entity and a service of the closed list,
 then reported back (POST /ha/actions/{id}).
 
+The same channel carries the car events (`iodek.event`: charge started, alarm...),
+fired in Home Assistant as `vigie_event` with the car's device_id. With no exposed
+entity, the bridge still runs for these events when the key has the home
+automation permission.
+
 Neither the API key nor the socket URL (which holds the app key) is ever logged.
 """
 
@@ -26,7 +31,7 @@ import aiohttp
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import ATTR_FRIENDLY_NAME, ATTR_ICON, __version__ as HA_VERSION
 from homeassistant.core import CALLBACK_TYPE, Context, Event, EventStateChangedData, HomeAssistant, State, callback
-from homeassistant.helpers import issue_registry as ir
+from homeassistant.helpers import device_registry as dr, issue_registry as ir
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from homeassistant.helpers.event import async_call_later, async_track_state_change_event, async_track_time_interval
 from homeassistant.loader import async_get_integration
@@ -36,6 +41,7 @@ from .api import REQUEST_TIMEOUT, VigieAuthError, VigieClient, VigieError, Vigie
 from .const import (
     BRIDGE_ACTION_TIMEOUT,
     BRIDGE_ACTIVITY_TIMEOUT,
+    BRIDGE_EVENT,
     BRIDGE_MAX_ENTITIES,
     BRIDGE_MESSAGE_MAX,
     BRIDGE_NAME_MAX,
@@ -51,7 +57,11 @@ from .const import (
     BRIDGE_STATES_DELAY,
     CONF_EXPOSED_ENTITIES,
     DOMAIN,
+    EVENT_FIELDS,
+    EVENT_REFRESH_TYPES,
+    EVENT_VIGIE,
 )
+from .entity import vehicle_identifier
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -203,12 +213,14 @@ class DashboardBridge:
         self.link_id: Any = None
         self.last_published_at: datetime | None = None
         self.last_action: dict[str, Any] | None = None
+        self.last_event: dict[str, Any] | None = None
         self.counters = {
             "publications": 0,
             "states_sent": 0,
             "actions_executed": 0,
             "actions_refused": 0,
             "actions_failed": 0,
+            "events_fired": 0,
             "reconnections": 0,
         }
         self._socket: dict[str, Any] | None = None
@@ -264,6 +276,10 @@ class DashboardBridge:
         self.last_error = code
         self._stopped = True
         self._halt()
+        if not self.entities:
+            # Events only, no button exposed: nothing for the user to repair.
+            _LOGGER.debug("ioDek refused the events channel (%s)", code)
+            return
         _LOGGER.warning(
             "ioDek refused the dashboard buttons (%s): bridge stopped until the options change or Home Assistant restarts",
             code,
@@ -492,6 +508,8 @@ class DashboardBridge:
             elif event == "action" and msg_channel == channel:
                 # Run aside so that pings keep flowing during a slow service.
                 self.entry.async_create_background_task(self.hass, self.async_handle_action(data), "vigie_dashboard_action")
+            elif event == BRIDGE_EVENT and msg_channel == channel:
+                self.async_fire_event(data)
 
     async def _socket_auth(self, socket_id: str, channel: str) -> str:
         try:
@@ -582,6 +600,36 @@ class DashboardBridge:
             # 409 already_reported, 404 not ours: nothing to do.
             _LOGGER.debug("ioDek did not take the report of order %s (%s)", action_id, err.code or type(err).__name__)
 
+    # Car events
+
+    @callback
+    def async_fire_event(self, data: Mapping[str, Any]) -> bool:
+        """Fire `vigie_event` for an event of a car of this entry, with the car's device_id."""
+        event_type = data.get("type")
+        try:
+            vehicle_id = int(data["vehicle_id"])
+        except (KeyError, TypeError, ValueError):
+            vehicle_id = None
+        coordinators = getattr(self.entry.runtime_data, "coordinators", {})
+        if not isinstance(event_type, str) or not event_type or vehicle_id not in coordinators:
+            _LOGGER.debug("ioDek event ignored (type %s, car %s)", event_type, vehicle_id)
+            return False
+        payload = {key: data[key] for key in EVENT_FIELDS if key in data}
+        device = dr.async_get(self.hass).async_get_device(
+            identifiers={(DOMAIN, vehicle_identifier(self.client.base_url, vehicle_id))}
+        )
+        payload["device_id"] = device.id if device else None
+        payload["config_entry_id"] = self.entry.entry_id
+        self.hass.bus.async_fire(EVENT_VIGIE, payload)
+        self.counters["events_fired"] += 1
+        self.last_event = {"type": event_type, "vehicle_id": vehicle_id, "at": data.get("at")}
+        if event_type in EVENT_REFRESH_TYPES:
+            coordinator = coordinators[vehicle_id]
+            self.entry.async_create_background_task(
+                self.hass, coordinator.async_refresh_after_event(), "vigie_refresh_after_event"
+            )
+        return True
+
     def diagnostics(self) -> dict[str, Any]:
         socket = self._socket
         return {
@@ -602,5 +650,6 @@ class DashboardBridge:
             ),
             "last_published_at": self.last_published_at.isoformat() if self.last_published_at else None,
             "last_action": dict(self.last_action) if self.last_action else None,
+            "last_event": dict(self.last_event) if self.last_event else None,
             "counters": dict(self.counters),
         }

@@ -190,6 +190,74 @@
       },
       "last_seen": {
         "name": "Letzter Datenempfang"
+      },
+      "charge_plan_status": {
+        "name": "Ladeplan",
+        "state": {
+          "planned": "Geplant",
+          "unplugged": "Geplant, nicht eingesteckt",
+          "running": "Läuft",
+          "done": "Erledigt",
+          "none": "Nichts zu laden",
+          "nodata": "Akkustand unbekannt",
+          "unmanaged": "Ort nicht gesteuert",
+          "away": "Außerhalb der Ladeorte",
+          "failed": "Fehlgeschlagen",
+          "no_plan": "Kein Plan"
+        }
+      },
+      "charge_plan_start": {
+        "name": "Geplanter Ladebeginn"
+      },
+      "charge_plan_end": {
+        "name": "Geplantes Ladeende"
+      },
+      "charge_plan_target": {
+        "name": "Geplantes Ziel"
+      },
+      "charge_plan_reason": {
+        "name": "Grund des Plans",
+        "state": {
+          "minimum": "Tagesminimum",
+          "calendar": "Kalender",
+          "trip": "Geplante Fahrt"
+        }
+      },
+      "electricity_price": {
+        "name": "Aktueller Preis"
+      },
+      "electricity_period": {
+        "name": "Zeitraum",
+        "state": {
+          "base": "Grundtarif",
+          "peak": "Hauptzeit",
+          "offpeak": "Nebenzeit",
+          "free": "Kostenlos"
+        }
+      },
+      "electricity_next_change": {
+        "name": "Nächster Wechsel"
+      },
+      "electricity_next_price": {
+        "name": "Nächster Preis"
+      },
+      "tempo_today": {
+        "name": "Tempo heute",
+        "state": {
+          "blue": "Blau",
+          "white": "Weiß",
+          "red": "Rot",
+          "unknown": "Unbekannt"
+        }
+      },
+      "tempo_tomorrow": {
+        "name": "Tempo morgen",
+        "state": {
+          "blue": "Blau",
+          "white": "Weiß",
+          "red": "Rot",
+          "unknown": "Unbekannt"
+        }
       }
     },
     "binary_sensor": {
@@ -335,6 +403,22 @@
       }
     }
   },
+  "device": {
+    "electricity": {
+      "name": "ioDek Strom"
+    }
+  },
+  "device_automation": {
+    "trigger_type": {
+      "charge_started": "Laden begonnen",
+      "charge_complete": "Laden abgeschlossen",
+      "charge_stopped": "Laden unterbrochen",
+      "battery_low": "Akku unter der Warnschwelle",
+      "sentry_alert": "Wächter-Modus-Alarm",
+      "parked": "Fahrzeug geparkt",
+      "charge_limit_set": "Ladelimit des Ortes angewendet"
+    }
+  },
   "services": {
     "refresh": {
       "name": "Aktualisieren",
@@ -362,6 +446,9 @@
     },
     "update_failed": {
       "message": "ioDek ist nicht erreichbar ({error})."
+    },
+    "energy_unsupported": {
+      "message": "Dieses ioDek liefert noch keine Stromdaten."
     },
     "vehicle_asleep": {
       "message": "Das Fahrzeug schläft. Zuerst Aufwecken drücken (3 pro Stunde)."

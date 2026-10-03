@@ -22,7 +22,24 @@
       "tyre_pressure_front_left": { "default": "mdi:car-tire-alert" },
       "tyre_pressure_front_right": { "default": "mdi:car-tire-alert" },
       "tyre_pressure_rear_left": { "default": "mdi:car-tire-alert" },
-      "tyre_pressure_rear_right": { "default": "mdi:car-tire-alert" }
+      "tyre_pressure_rear_right": { "default": "mdi:car-tire-alert" },
+      "charge_plan_status": {
+        "default": "mdi:calendar-clock",
+        "state": { "running": "mdi:battery-charging", "done": "mdi:battery-check", "unplugged": "mdi:power-plug-off" }
+      },
+      "charge_plan_start": { "default": "mdi:clock-start" },
+      "charge_plan_end": { "default": "mdi:clock-end" },
+      "charge_plan_target": { "default": "mdi:battery-arrow-up" },
+      "charge_plan_reason": { "default": "mdi:help-circle-outline" },
+      "electricity_price": { "default": "mdi:cash" },
+      "electricity_period": {
+        "default": "mdi:transmission-tower",
+        "state": { "offpeak": "mdi:weather-night", "peak": "mdi:white-balance-sunny", "free": "mdi:gift-outline" }
+      },
+      "electricity_next_change": { "default": "mdi:clock-outline" },
+      "electricity_next_price": { "default": "mdi:cash-clock" },
+      "tempo_today": { "default": "mdi:calendar-today" },
+      "tempo_tomorrow": { "default": "mdi:calendar-arrow-right" }
     },
     "binary_sensor": {
       "sentry": { "default": "mdi:cctv-off", "state": { "on": "mdi:cctv" } },

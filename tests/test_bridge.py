@@ -37,7 +37,7 @@ LIGHT = "light.salon"
 SCRIPT = "script.portail"
 APP_KEY = "appkey123"
 SOCKET = {
-    "url": f"wss://ws.vigie.test/app/{APP_KEY}?protocol=7&client=iodek-ha&version=0.4.0",
+    "url": f"wss://ws.vigie.test/app/{APP_KEY}?protocol=7&client=iodek-ha&version=0.5.0",
     "channel": "private-ha.7",
     "auth_endpoint": "/ha/socket-auth",
     "activity_timeout": 20,
@@ -124,7 +124,7 @@ async def test_publish_on_start(hass: HomeAssistant, vigie: FakeVigie) -> None:
     entry = await _setup(hass, [SCRIPT, LIGHT, "switch.prise", "fan.absent"])
     await _until(lambda: len(_published(vigie)) == 1)
     body = _published(vigie)[0]
-    assert body["instance"] == {"name": "test home", "ha_version": HA_VERSION, "integration_version": "0.4.0"}
+    assert body["instance"] == {"name": "test home", "ha_version": HA_VERSION, "integration_version": "0.5.0"}
     assert body["entities"] == [
         {"entity_id": SCRIPT, "name": "Ouvrir le portail", "icon": "mdi:gate", "state": "off"},
         {"entity_id": LIGHT, "name": "Salon", "icon": None, "state": "on"},

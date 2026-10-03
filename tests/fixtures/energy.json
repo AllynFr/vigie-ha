@@ -1,0 +1,5 @@
+{"now": "2026-10-06T10:20:00Z", "timezone": "Europe/Paris",
+ "place": {"id": 3, "name": "Maison", "default": true, "source": "default"},
+ "tariff": "tempo", "period": "peak", "offpeak": false, "color": "white", "price_eur_kwh": 0.1921,
+ "next": {"at": "2026-10-06T20:00:00Z", "period": "offpeak", "offpeak": true, "color": "white", "price_eur_kwh": 0.1536},
+ "tempo": {"today": {"day": "2026-10-06", "color": "white"}, "tomorrow": {"day": "2026-10-07", "color": null}}}

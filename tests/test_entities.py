@@ -14,7 +14,7 @@ from pytest_homeassistant_custom_component.common import async_fire_time_changed
 
 from custom_components.vigie.const import DOMAIN
 
-from .conftest import API, FakeVigie, make_entry
+from .conftest import API, FakeVigie, make_entry, unique_key as _key
 
 ALL = ["lecture", "charge", "confort", "acces"]
 CONTROL_DOMAINS = ("switch", "number", "climate", "lock", "button", "select")
@@ -30,7 +30,7 @@ async def _setup(hass: HomeAssistant, abilities: list[str] | None = None, signal
 
 def _entities(hass: HomeAssistant, entry) -> dict[str, er.RegistryEntry]:
     registry = er.async_get(hass)
-    return {e.unique_id.split("_1_", 1)[1]: e for e in er.async_entries_for_config_entry(registry, entry.entry_id)}
+    return {_key(e.unique_id): e for e in er.async_entries_for_config_entry(registry, entry.entry_id)}
 
 
 def _state(hass: HomeAssistant, entry, key: str):

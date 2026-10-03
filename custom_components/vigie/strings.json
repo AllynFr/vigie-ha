@@ -190,6 +190,74 @@
       },
       "last_seen": {
         "name": "Last data received"
+      },
+      "charge_plan_status": {
+        "name": "Charge plan",
+        "state": {
+          "planned": "Planned",
+          "unplugged": "Planned, car unplugged",
+          "running": "Charging",
+          "done": "Done",
+          "none": "Nothing to charge",
+          "nodata": "Battery level unknown",
+          "unmanaged": "Place not managed",
+          "away": "Away from charging places",
+          "failed": "Failed",
+          "no_plan": "No plan"
+        }
+      },
+      "charge_plan_start": {
+        "name": "Planned charge start"
+      },
+      "charge_plan_end": {
+        "name": "Planned charge end"
+      },
+      "charge_plan_target": {
+        "name": "Planned target"
+      },
+      "charge_plan_reason": {
+        "name": "Plan reason",
+        "state": {
+          "minimum": "Daily minimum",
+          "calendar": "Calendar",
+          "trip": "Planned trip"
+        }
+      },
+      "electricity_price": {
+        "name": "Current price"
+      },
+      "electricity_period": {
+        "name": "Period",
+        "state": {
+          "base": "Base",
+          "peak": "Peak hours",
+          "offpeak": "Off-peak hours",
+          "free": "Free"
+        }
+      },
+      "electricity_next_change": {
+        "name": "Next change"
+      },
+      "electricity_next_price": {
+        "name": "Next price"
+      },
+      "tempo_today": {
+        "name": "Tempo today",
+        "state": {
+          "blue": "Blue",
+          "white": "White",
+          "red": "Red",
+          "unknown": "Unknown"
+        }
+      },
+      "tempo_tomorrow": {
+        "name": "Tempo tomorrow",
+        "state": {
+          "blue": "Blue",
+          "white": "White",
+          "red": "Red",
+          "unknown": "Unknown"
+        }
       }
     },
     "binary_sensor": {
@@ -335,6 +403,22 @@
       }
     }
   },
+  "device": {
+    "electricity": {
+      "name": "ioDek Electricity"
+    }
+  },
+  "device_automation": {
+    "trigger_type": {
+      "charge_started": "Charge started",
+      "charge_complete": "Charge complete",
+      "charge_stopped": "Charge interrupted",
+      "battery_low": "Battery below the alert threshold",
+      "sentry_alert": "Sentry Mode alert",
+      "parked": "Car parked",
+      "charge_limit_set": "Charge limit of the place applied"
+    }
+  },
   "services": {
     "refresh": {
       "name": "Refresh",
@@ -362,6 +446,9 @@
     },
     "update_failed": {
       "message": "ioDek is unreachable ({error})."
+    },
+    "energy_unsupported": {
+      "message": "This ioDek does not provide electricity data yet."
     },
     "vehicle_asleep": {
       "message": "The car is asleep. Press Wake up first (3 per hour)."

@@ -163,6 +163,14 @@ class VigieClient:
     async def charges(self, vehicle_id: int, per_page: int = 1) -> dict[str, Any]:
         return await self._request("GET", f"/vehicles/{vehicle_id}/charges", params={"per_page": per_page})
 
+    async def charge_plan(self, vehicle_id: int) -> dict[str, Any]:
+        """GET /vehicles/{id}/charge-plan: current or upcoming plan ({"plan": null} when none)."""
+        return await self._request("GET", f"/vehicles/{vehicle_id}/charge-plan")
+
+    async def energy(self) -> dict[str, Any]:
+        """GET /energy: electricity of the key's account (tariff, period, price, Tempo)."""
+        return await self._request("GET", "/energy")
+
     async def command(self, vehicle_id: int, command: str, body: dict[str, Any] | None = None) -> dict[str, Any]:
         return await self._request("POST", f"/vehicles/{vehicle_id}/commands/{command}", json=body or {})
 

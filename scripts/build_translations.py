@@ -214,6 +214,34 @@ T: dict[str, list[str]] = {
     "entity.sensor.nav_arrival.name": ["Expected arrival", "Arrivée prévue", "Voraussichtliche Ankunft", "Llegada prevista", "Arrivo previsto", "预计到达时间"],
     "entity.sensor.nav_battery_at_arrival.name": ["Battery at arrival", "Batterie à l'arrivée", "Akkustand bei Ankunft", "Batería a la llegada", "Batteria all'arrivo", "到达时电量"],
     "entity.sensor.last_seen.name": ["Last data received", "Dernière réception", "Letzter Datenempfang", "Última recepción", "Ultima ricezione", "最后接收时间"],
+    "entity.sensor.charge_plan_status.name": ["Charge plan", "Plan de charge", "Ladeplan", "Plan de carga", "Piano di ricarica", "充电计划"],
+    "entity.sensor.charge_plan_status.state.planned": ["Planned", "Planifiée", "Geplant", "Planificada", "Pianificata", "已计划"],
+    "entity.sensor.charge_plan_status.state.unplugged": ["Planned, car unplugged", "Planifiée, voiture débranchée", "Geplant, nicht eingesteckt", "Planificada, coche desenchufado", "Pianificata, auto scollegata", "已计划，未插枪"],
+    "entity.sensor.charge_plan_status.state.running": ["Charging", "En cours", "Läuft", "En curso", "In corso", "充电中"],
+    "entity.sensor.charge_plan_status.state.done": ["Done", "Terminée", "Erledigt", "Terminada", "Completata", "已完成"],
+    "entity.sensor.charge_plan_status.state.none": ["Nothing to charge", "Rien à charger", "Nichts zu laden", "Nada que cargar", "Niente da caricare", "无需充电"],
+    "entity.sensor.charge_plan_status.state.nodata": ["Battery level unknown", "Niveau de batterie inconnu", "Akkustand unbekannt", "Nivel de batería desconocido", "Livello batteria sconosciuto", "电量未知"],
+    "entity.sensor.charge_plan_status.state.unmanaged": ["Place not managed", "Lieu non piloté", "Ort nicht gesteuert", "Lugar no gestionado", "Luogo non gestito", "该地点不受管理"],
+    "entity.sensor.charge_plan_status.state.away": ["Away from charging places", "Hors des lieux de recharge", "Außerhalb der Ladeorte", "Fuera de los lugares de carga", "Fuori dai luoghi di ricarica", "不在充电地点"],
+    "entity.sensor.charge_plan_status.state.failed": ["Failed", "Échec", "Fehlgeschlagen", "Fallida", "Non riuscita", "失败"],
+    "entity.sensor.charge_plan_status.state.no_plan": ["No plan", "Aucun plan", "Kein Plan", "Sin plan", "Nessun piano", "无计划"],
+    "entity.sensor.charge_plan_start.name": ["Planned charge start", "Début de charge prévu", "Geplanter Ladebeginn", "Inicio de carga previsto", "Inizio ricarica previsto", "计划充电开始"],
+    "entity.sensor.charge_plan_end.name": ["Planned charge end", "Fin de charge prévue", "Geplantes Ladeende", "Fin de carga prevista", "Fine ricarica prevista", "计划充电结束"],
+    "entity.sensor.charge_plan_target.name": ["Planned target", "Pourcentage visé", "Geplantes Ziel", "Objetivo previsto", "Obiettivo previsto", "计划目标电量"],
+    "entity.sensor.charge_plan_reason.name": ["Plan reason", "Raison du plan", "Grund des Plans", "Motivo del plan", "Motivo del piano", "计划原因"],
+    "entity.sensor.charge_plan_reason.state.minimum": ["Daily minimum", "Minimum du jour", "Tagesminimum", "Mínimo del día", "Minimo del giorno", "每日最低电量"],
+    "entity.sensor.charge_plan_reason.state.calendar": ["Calendar", "Agenda", "Kalender", "Calendario", "Calendario", "日历"],
+    "entity.sensor.charge_plan_reason.state.trip": ["Planned trip", "Trajet prévu", "Geplante Fahrt", "Trayecto previsto", "Viaggio previsto", "计划行程"],
+    "entity.sensor.electricity_price.name": ["Current price", "Prix en cours", "Aktueller Preis", "Precio actual", "Prezzo attuale", "当前电价"],
+    "entity.sensor.electricity_period.name": ["Period", "Période", "Zeitraum", "Periodo", "Fascia", "时段"],
+    "entity.sensor.electricity_period.state.base": ["Base", "Base", "Grundtarif", "Base", "Base", "基础电价"],
+    "entity.sensor.electricity_period.state.peak": ["Peak hours", "Heures pleines", "Hauptzeit", "Horas punta", "Ore piene", "高峰时段"],
+    "entity.sensor.electricity_period.state.offpeak": ["Off-peak hours", "Heures creuses", "Nebenzeit", "Horas valle", "Ore vuote", "低谷时段"],
+    "entity.sensor.electricity_period.state.free": ["Free", "Gratuit", "Kostenlos", "Gratis", "Gratuito", "免费"],
+    "entity.sensor.electricity_next_change.name": ["Next change", "Prochain changement", "Nächster Wechsel", "Próximo cambio", "Prossimo cambio", "下次切换"],
+    "entity.sensor.electricity_next_price.name": ["Next price", "Prix suivant", "Nächster Preis", "Precio siguiente", "Prezzo successivo", "下一时段电价"],
+    "entity.sensor.tempo_today.name": ["Tempo today", "Tempo aujourd'hui", "Tempo heute", "Tempo hoy", "Tempo oggi", "今日 Tempo"],
+    "entity.sensor.tempo_tomorrow.name": ["Tempo tomorrow", "Tempo demain", "Tempo morgen", "Tempo mañana", "Tempo domani", "明日 Tempo"],
     "entity.binary_sensor.online.name": ["Online", "En ligne", "Online", "En línea", "Online", "在线"],
     "entity.binary_sensor.charging.name": ["Charging", "En charge", "Lädt", "Cargando", "In carica", "充电中"],
     "entity.binary_sensor.plugged_in.name": ["Plugged in", "Branchée", "Eingesteckt", "Enchufado", "Collegata", "已插枪"],
@@ -246,6 +274,16 @@ T: dict[str, list[str]] = {
     "entity.select.seat_heater_rear_left.name": ["Seat heater rear left", "Siège chauffant arrière gauche", "Sitzheizung hinten links", "Asiento calefactado trasero izquierdo", "Sedile riscaldato posteriore sinistro", "左后座椅加热"],
     "entity.select.seat_heater_rear_center.name": ["Seat heater rear centre", "Siège chauffant arrière centre", "Sitzheizung hinten Mitte", "Asiento calefactado trasero central", "Sedile riscaldato posteriore centrale", "后排中间座椅加热"],
     "entity.select.seat_heater_rear_right.name": ["Seat heater rear right", "Siège chauffant arrière droit", "Sitzheizung hinten rechts", "Asiento calefactado trasero derecho", "Sedile riscaldato posteriore destro", "右后座椅加热"],
+    # devices
+    "device.electricity.name": ["ioDek Electricity", "ioDek Électricité", "ioDek Strom", "ioDek Electricidad", "ioDek Elettricità", "ioDek 电力"],
+    # device triggers (car events pushed by ioDek)
+    "device_automation.trigger_type.charge_started": ["Charge started", "Charge commencée", "Laden begonnen", "Carga iniciada", "Ricarica iniziata", "开始充电"],
+    "device_automation.trigger_type.charge_complete": ["Charge complete", "Charge terminée", "Laden abgeschlossen", "Carga completada", "Ricarica completata", "充电完成"],
+    "device_automation.trigger_type.charge_stopped": ["Charge interrupted", "Charge interrompue", "Laden unterbrochen", "Carga interrumpida", "Ricarica interrotta", "充电中断"],
+    "device_automation.trigger_type.battery_low": ["Battery below the alert threshold", "Batterie sous le seuil d'alerte", "Akku unter der Warnschwelle", "Batería bajo el umbral de alerta", "Batteria sotto la soglia di avviso", "电量低于提醒阈值"],
+    "device_automation.trigger_type.sentry_alert": ["Sentry Mode alert", "Alarme Sentinelle", "Wächter-Modus-Alarm", "Alerta del Modo Centinela", "Allarme Modalità Sentinella", "哨兵模式警报"],
+    "device_automation.trigger_type.parked": ["Car parked", "Voiture garée", "Fahrzeug geparkt", "Coche aparcado", "Auto parcheggiata", "车辆已停车"],
+    "device_automation.trigger_type.charge_limit_set": ["Charge limit of the place applied", "Limite de charge du lieu appliquée", "Ladelimit des Ortes angewendet", "Límite de carga del lugar aplicado", "Limite di ricarica del luogo applicato", "已应用地点充电上限"],
     # services
     "services.refresh.name": ["Refresh", "Actualiser", "Aktualisieren", "Actualizar", "Aggiorna", "刷新"],
     "services.refresh.description": ["Reads the latest data from ioDek now. Free, does not wake the car.", "Relit tout de suite les dernières données d'ioDek. Gratuit, ne réveille pas la voiture.", "Liest sofort die neuesten Daten von ioDek. Kostenlos, weckt das Fahrzeug nicht.", "Lee ahora los últimos datos d'ioDek. Gratis, no despierta el coche.", "Rilegge subito gli ultimi dati da ioDek. Gratuito, non risveglia l'auto.", "立即从 ioDek 读取最新数据。免费，不会唤醒车辆。"],
@@ -257,6 +295,7 @@ T: dict[str, list[str]] = {
     "exceptions.vehicle_not_found.message": ["This car is no longer visible with this key.", "Cette voiture n'est plus visible avec cette clé.", "Dieses Fahrzeug ist mit diesem Schlüssel nicht mehr sichtbar.", "Este coche ya no es visible con esta clave.", "Quest'auto non è più visibile con questa chiave.", "使用此密钥已看不到该车辆。"],
     "exceptions.read_forbidden.message": ["The key no longer has the read permission.", "La clé n'a plus le droit lecture.", "Der Schlüssel hat kein Leserecht mehr.", "La clave ya no tiene permiso de lectura.", "La chiave non ha più il permesso di lettura.", "该密钥已没有读取权限。"],
     "exceptions.update_failed.message": ["ioDek is unreachable ({error}).", "ioDek est injoignable ({error}).", "ioDek ist nicht erreichbar ({error}).", "ioDek no responde ({error}).", "ioDek non è raggiungibile ({error}).", "无法连接 ioDek（{error}）。"],
+    "exceptions.energy_unsupported.message": ["This ioDek does not provide electricity data yet.", "Cet ioDek ne fournit pas encore les données d'électricité.", "Dieses ioDek liefert noch keine Stromdaten.", "Este ioDek aún no ofrece datos de electricidad.", "Questo ioDek non fornisce ancora i dati sull'elettricità.", "此 ioDek 暂不提供电力数据。"],
     "exceptions.vehicle_asleep.message": ["The car is asleep. Press Wake up first (3 per hour).", "La voiture dort. Appuyez d'abord sur Réveiller (3 par heure).", "Das Fahrzeug schläft. Zuerst Aufwecken drücken (3 pro Stunde).", "El coche está dormido. Pulse primero Despertar (3 por hora).", "L'auto dorme. Premi prima Risveglia (3 all'ora).", "车辆处于休眠状态。请先按“唤醒”（每小时 3 次）。"],
     "exceptions.ability_missing.message": ["The API key lacks the permission for this command: {message}", "La clé API n'a pas le droit pour cette commande : {message}", "Dem API-Schlüssel fehlt das Recht für diesen Befehl: {message}", "La clave API no tiene permiso para este comando: {message}", "La chiave API non ha il permesso per questo comando: {message}", "API 密钥没有执行此命令的权限：{message}"],
     "exceptions.option_disabled.message": ["This option is off for the car in ioDek: {message}", "Cette option est désactivée pour la voiture dans ioDek : {message}", "Diese Option ist für das Fahrzeug in ioDek deaktiviert: {message}", "Esta opción está desactivada para el coche en ioDek: {message}", "Questa opzione è disattivata per l'auto in ioDek: {message}", "ioDek 中该车辆的此选项已关闭：{message}"],
@@ -269,6 +308,16 @@ SELECT_STATES = {
     "medium": ["Medium", "Moyen", "Mittel", "Medio", "Medio", "中"],
     "high": ["High", "Fort", "Hoch", "Alto", "Alto", "高"],
 }
+TEMPO_STATES = {
+    "blue": ["Blue", "Bleu", "Blau", "Azul", "Blu", "蓝色"],
+    "white": ["White", "Blanc", "Weiß", "Blanco", "Bianco", "白色"],
+    "red": ["Red", "Rouge", "Rot", "Rojo", "Rosso", "红色"],
+    "unknown": ["Unknown", "Inconnue", "Unbekannt", "Desconocido", "Sconosciuto", "未知"],
+}
+for day in ("today", "tomorrow"):
+    for state, texts in TEMPO_STATES.items():
+        T[f"entity.sensor.tempo_{day}.state.{state}"] = texts
+
 for seat in ("left", "right", "rear_left", "rear_center", "rear_right"):
     for state, texts in SELECT_STATES.items():
         T[f"entity.select.seat_heater_{seat}.state.{state}"] = texts

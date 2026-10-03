@@ -1,4 +1,4 @@
-"""Sensors: battery, charge, driving, cabin and tyres."""
+"""Sensors: battery, charge, charge plan, driving, cabin and tyres; electricity of the account."""
 
 from __future__ import annotations
 
@@ -26,13 +26,16 @@ from homeassistant.const import (
     UnitOfTime,
 )
 from homeassistant.core import HomeAssistant
+from homeassistant.helpers.device_registry import DeviceEntryType, DeviceInfo
 from homeassistant.helpers.entity_platform import AddConfigEntryEntitiesCallback
+from homeassistant.helpers.update_coordinator import CoordinatorEntity
 from homeassistant.util import dt as dt_util
 
 from . import VigieConfigEntry
-from .const import ABILITY_CHARGE
-from .coordinator import VigieCoordinator, VigieData
-from .entity import VigieEntity, add_when_available
+from .api import app_url
+from .const import ABILITY_CHARGE, DOMAIN, ENERGY_PERIODS, PLAN_REASONS, PLAN_STATUSES, TEMPO_COLORS
+from .coordinator import VigieCoordinator, VigieData, VigieEnergyCoordinator
+from .entity import VigieEntity, add_when_available, electricity_key
 from .helpers import CHARGE_STATES, charge_state, fast_charging, num
 
 PARALLEL_UPDATES = 0
@@ -139,6 +142,34 @@ def _last_charge_attrs(data: VigieData) -> dict[str, Any] | None:
         "soc_end": c.get("soc_end_percent"),
         "max_power_kw": round(c["max_power_w"] / 1000, 1) if c.get("max_power_w") is not None else None,
     }
+
+
+def _plan(data: VigieData) -> dict[str, Any]:
+    return (data.charge_plan or {}).get("plan") or {}
+
+
+def _plan_status(data: VigieData) -> str:
+    """Status of the current or upcoming plan; no_plan when ioDek has none."""
+    plan = _plan(data)
+    if not plan:
+        return "no_plan"
+    return plan["status"] if plan.get("status") in PLAN_STATUSES else "none"
+
+
+def _plan_attrs(data: VigieData) -> dict[str, Any]:
+    plan = _plan(data)
+    return {
+        "planner_enabled": (data.charge_plan or {}).get("planner_enabled"),
+        "simulated": plan.get("simulated"),
+        "departure": plan.get("departure_at"),
+        "soc_planned": plan.get("soc_planned"),
+        "energy_kwh": plan.get("energy_kwh"),
+        "cost_eur": plan.get("cost_eur"),
+    }
+
+
+def _plan_exists(data: VigieData) -> bool:
+    return data.charge_plan is not None
 
 
 def _tyre(key: str, name: str) -> VigieSensorDescription:
@@ -434,6 +465,46 @@ SENSORS: tuple[VigieSensorDescription, ...] = (
         exists_fn=lambda d: "navigation" in d.state and d.options.get("location", False),
         available_fn=lambda d: _nav(d).get("battery_at_arrival") is not None,
     ),
+    # Charge plan of ioDek's planner (current or upcoming).
+    VigieSensorDescription(
+        key="charge_plan_status",
+        translation_key="charge_plan_status",
+        device_class=SensorDeviceClass.ENUM,
+        options=PLAN_STATUSES,
+        value_fn=_plan_status,
+        exists_fn=_plan_exists,
+        attrs_fn=_plan_attrs,
+    ),
+    VigieSensorDescription(
+        key="charge_plan_start",
+        translation_key="charge_plan_start",
+        device_class=SensorDeviceClass.TIMESTAMP,
+        value_fn=lambda d: _time(_plan(d).get("start_at")),
+        exists_fn=_plan_exists,
+    ),
+    VigieSensorDescription(
+        key="charge_plan_end",
+        translation_key="charge_plan_end",
+        device_class=SensorDeviceClass.TIMESTAMP,
+        value_fn=lambda d: _time(_plan(d).get("end_at")),
+        exists_fn=_plan_exists,
+    ),
+    VigieSensorDescription(
+        key="charge_plan_target",
+        translation_key="charge_plan_target",
+        native_unit_of_measurement=PERCENTAGE,
+        suggested_display_precision=0,
+        value_fn=lambda d: _plan(d).get("target_soc"),
+        exists_fn=_plan_exists,
+    ),
+    VigieSensorDescription(
+        key="charge_plan_reason",
+        translation_key="charge_plan_reason",
+        device_class=SensorDeviceClass.ENUM,
+        options=PLAN_REASONS,
+        value_fn=lambda d: _plan(d).get("reason") if _plan(d).get("reason") in PLAN_REASONS else None,
+        exists_fn=_plan_exists,
+    ),
     VigieSensorDescription(
         key="last_seen",
         translation_key="last_seen",
@@ -442,6 +513,91 @@ SENSORS: tuple[VigieSensorDescription, ...] = (
         value_fn=_last_seen,
         exists_fn=lambda d: True,
         attrs_fn=lambda d: {"age_s": d.state.get("age_s")},
+    ),
+)
+
+
+# Electricity of the account: one "ioDek Electricity" device per config entry.
+PRICE_UNIT = "EUR/kWh"
+
+
+@dataclass(frozen=True, kw_only=True)
+class VigieEnergySensorDescription(SensorEntityDescription):
+    """Sensor fed by GET /energy."""
+
+    value_fn: Callable[[dict[str, Any]], Any]
+    attrs_fn: Callable[[dict[str, Any]], dict[str, Any] | None] | None = None
+    available_fn: Callable[[dict[str, Any]], bool] | None = None
+
+
+def _next(data: dict[str, Any]) -> dict[str, Any]:
+    return data.get("next") or {}
+
+
+def _tempo(data: dict[str, Any], day: str) -> str:
+    color = ((data.get("tempo") or {}).get(day) or {}).get("color")
+    return color if color in TEMPO_COLORS else "unknown"
+
+
+def _price_attrs(data: dict[str, Any]) -> dict[str, Any]:
+    place = data.get("place") or {}
+    return {
+        "tariff": data.get("tariff"),
+        "period": data.get("period"),
+        "tempo_color": data.get("color"),
+        "place": place.get("name"),
+        "place_source": place.get("source"),
+    }
+
+
+ENERGY_SENSORS: tuple[VigieEnergySensorDescription, ...] = (
+    VigieEnergySensorDescription(
+        key="electricity_price",
+        translation_key="electricity_price",
+        native_unit_of_measurement=PRICE_UNIT,
+        state_class=SensorStateClass.MEASUREMENT,
+        suggested_display_precision=4,
+        value_fn=lambda d: d.get("price_eur_kwh"),
+        attrs_fn=_price_attrs,
+    ),
+    VigieEnergySensorDescription(
+        key="electricity_period",
+        translation_key="electricity_period",
+        device_class=SensorDeviceClass.ENUM,
+        options=ENERGY_PERIODS,
+        value_fn=lambda d: d.get("period") if d.get("period") in ENERGY_PERIODS else None,
+        attrs_fn=lambda d: {"tariff": d.get("tariff"), "tempo_color": d.get("color")},
+    ),
+    VigieEnergySensorDescription(
+        key="electricity_next_change",
+        translation_key="electricity_next_change",
+        device_class=SensorDeviceClass.TIMESTAMP,
+        value_fn=lambda d: _time(_next(d).get("at")),
+        attrs_fn=lambda d: {"period": _next(d).get("period"), "tempo_color": _next(d).get("color")},
+    ),
+    VigieEnergySensorDescription(
+        key="electricity_next_price",
+        translation_key="electricity_next_price",
+        native_unit_of_measurement=PRICE_UNIT,
+        suggested_display_precision=4,
+        value_fn=lambda d: _next(d).get("price_eur_kwh"),
+        attrs_fn=lambda d: {"at": _next(d).get("at"), "period": _next(d).get("period")},
+    ),
+    VigieEnergySensorDescription(
+        key="tempo_today",
+        translation_key="tempo_today",
+        device_class=SensorDeviceClass.ENUM,
+        options=TEMPO_COLORS,
+        value_fn=lambda d: _tempo(d, "today"),
+        attrs_fn=lambda d: {"day": ((d.get("tempo") or {}).get("today") or {}).get("day")},
+    ),
+    VigieEnergySensorDescription(
+        key="tempo_tomorrow",
+        translation_key="tempo_tomorrow",
+        device_class=SensorDeviceClass.ENUM,
+        options=TEMPO_COLORS,
+        value_fn=lambda d: _tempo(d, "tomorrow"),
+        attrs_fn=lambda d: {"day": ((d.get("tempo") or {}).get("tomorrow") or {}).get("day")},
     ),
 )
 
@@ -459,6 +615,9 @@ async def async_setup_entry(
             VigieSensor,
             async_add_entities,
         )
+    energy = runtime.energy
+    if energy is not None and not energy.unsupported:
+        async_add_entities(VigieEnergySensor(energy, d) for d in ENERGY_SENSORS)
 
 
 class VigieSensor(VigieEntity, SensorEntity):
@@ -486,3 +645,41 @@ class VigieSensor(VigieEntity, SensorEntity):
         if self.entity_description.attrs_fn is None:
             return None
         return self.entity_description.attrs_fn(self.data)
+
+
+class VigieEnergySensor(CoordinatorEntity[VigieEnergyCoordinator], SensorEntity):
+    """Electricity of the account (tariff of the charging place, period, Tempo colours)."""
+
+    _attr_has_entity_name = True
+    entity_description: VigieEnergySensorDescription
+
+    def __init__(self, coordinator: VigieEnergyCoordinator, description: VigieEnergySensorDescription) -> None:
+        super().__init__(coordinator)
+        self.entity_description = description
+        key = electricity_key(coordinator.config_entry, coordinator.client.base_url)
+        self._attr_unique_id = f"{key}_{description.key}"
+        self._attr_device_info = DeviceInfo(
+            identifiers={(DOMAIN, key)},
+            translation_key="electricity",
+            manufacturer="ioDek",
+            entry_type=DeviceEntryType.SERVICE,
+            configuration_url=f"{app_url(coordinator.client.base_url)}/compte/electricite",
+        )
+
+    @property
+    def _data(self) -> dict[str, Any]:
+        return self.coordinator.data or {}
+
+    @property
+    def available(self) -> bool:
+        return super().available and self.coordinator.data is not None
+
+    @property
+    def native_value(self) -> Any:
+        return self.entity_description.value_fn(self._data)
+
+    @property
+    def extra_state_attributes(self) -> dict[str, Any] | None:
+        if self.entity_description.attrs_fn is None:
+            return None
+        return self.entity_description.attrs_fn(self._data)

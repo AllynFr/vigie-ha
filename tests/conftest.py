@@ -43,6 +43,8 @@ class FakeVigie:
         self.state = load("state.json")
         self.battery = load("battery.json")
         self.charges = load("charges.json")
+        self.energy = load("energy.json")
+        self.charge_plan = load("charge_plan.json")
 
     def register(self, clear: bool = True) -> None:
         """Default read endpoints. Mocks registered before these take precedence."""
@@ -52,6 +54,8 @@ class FakeVigie:
         self.mock.get(f"{API}/vehicles/1/state", json=self.state)
         self.mock.get(f"{API}/vehicles/1/battery", json=self.battery)
         self.mock.get(f"{API}/vehicles/1/charges", json=self.charges)
+        self.mock.get(f"{API}/vehicles/1/charge-plan", json=self.charge_plan)
+        self.mock.get(f"{API}/energy", json=self.energy)
 
     def set_options(self, **options: bool) -> None:
         for target in (self.state["options"], self.vehicles["data"][0]["options"]):
@@ -86,6 +90,13 @@ def make_entry(abilities: list[str] | None = None, signal_buttons: bool = False)
         },
         options={CONF_SCAN_INTERVAL: 60, CONF_SIGNAL_BUTTONS: signal_buttons},
     )
+
+
+def unique_key(unique_id: str) -> str:
+    """Description key of an entity: car entities are `<host>_1_<key>`, electricity ones `<host>_electricity_<entry>_<key>`."""
+    if "_1_" in unique_id:
+        return unique_id.split("_1_", 1)[1]
+    return unique_id.split(":1_", 1)[1]
 
 
 def deep(obj: dict[str, Any]) -> dict[str, Any]:

@@ -5,6 +5,7 @@ from __future__ import annotations
 from collections.abc import Callable, Iterable
 from typing import Any
 
+from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import callback
 from homeassistant.exceptions import HomeAssistantError, ServiceValidationError
 from homeassistant.helpers.device_registry import DeviceInfo
@@ -24,10 +25,20 @@ from .const import DOMAIN, MANUFACTURER
 from .coordinator import VigieCoordinator, VigieData
 
 
+def vehicle_identifier(base_url: str, vehicle_id: int) -> str:
+    """Stable prefix: instance host + Vigie vehicle id (device identifier and unique_id prefix)."""
+    host = base_url.split("://", 1)[-1]
+    return f"{host}_{vehicle_id}"
+
+
 def vehicle_key(coordinator: VigieCoordinator) -> str:
-    """Stable prefix: instance host + Vigie vehicle id."""
-    host = coordinator.client.base_url.split("://", 1)[-1]
-    return f"{host}_{coordinator.vehicle_id}"
+    return vehicle_identifier(coordinator.client.base_url, coordinator.vehicle_id)
+
+
+def electricity_key(entry: ConfigEntry, base_url: str) -> str:
+    """Identifier of the account's electricity device (one per config entry)."""
+    host = base_url.split("://", 1)[-1]
+    return f"{host}_electricity_{entry.unique_id or entry.entry_id}"
 
 
 class VigieEntity(CoordinatorEntity[VigieCoordinator]):

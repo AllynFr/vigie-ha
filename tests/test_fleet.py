@@ -25,6 +25,7 @@ async def test_two_cars_two_devices_with_their_own_controls(hass: HomeAssistant,
     vigie.mock.get(f"{API}/vehicles/2/state", json=state2)
     vigie.mock.get(f"{API}/vehicles/2/battery", json=vigie.battery)
     vigie.mock.get(f"{API}/vehicles/2/charges", json=vigie.charges)
+    vigie.mock.get(f"{API}/vehicles/2/charge-plan", json={"vehicle_id": 2, "planner_enabled": False, "plan": None})
 
     entry = make_entry(ALL)
     entry.add_to_hass(hass)
@@ -33,7 +34,8 @@ async def test_two_cars_two_devices_with_their_own_controls(hass: HomeAssistant,
     await hass.async_block_till_done()
 
     devices = dr.async_entries_for_config_entry(dr.async_get(hass), entry.entry_id)
-    assert sorted(d.name for d in devices) == ["Fleet 2", "Tessy"]
+    # The account's electricity device comes with the cars.
+    assert sorted(d.name for d in devices) == ["Fleet 2", "Tessy", "ioDek Electricity"]
 
     ents = er.async_entries_for_config_entry(er.async_get(hass), entry.entry_id)
     by_car: dict[str, dict[str, er.RegistryEntry]] = {"1": {}, "2": {}}

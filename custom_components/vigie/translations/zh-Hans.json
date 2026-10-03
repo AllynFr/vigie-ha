@@ -190,6 +190,74 @@
       },
       "last_seen": {
         "name": "最后接收时间"
+      },
+      "charge_plan_status": {
+        "name": "充电计划",
+        "state": {
+          "planned": "已计划",
+          "unplugged": "已计划，未插枪",
+          "running": "充电中",
+          "done": "已完成",
+          "none": "无需充电",
+          "nodata": "电量未知",
+          "unmanaged": "该地点不受管理",
+          "away": "不在充电地点",
+          "failed": "失败",
+          "no_plan": "无计划"
+        }
+      },
+      "charge_plan_start": {
+        "name": "计划充电开始"
+      },
+      "charge_plan_end": {
+        "name": "计划充电结束"
+      },
+      "charge_plan_target": {
+        "name": "计划目标电量"
+      },
+      "charge_plan_reason": {
+        "name": "计划原因",
+        "state": {
+          "minimum": "每日最低电量",
+          "calendar": "日历",
+          "trip": "计划行程"
+        }
+      },
+      "electricity_price": {
+        "name": "当前电价"
+      },
+      "electricity_period": {
+        "name": "时段",
+        "state": {
+          "base": "基础电价",
+          "peak": "高峰时段",
+          "offpeak": "低谷时段",
+          "free": "免费"
+        }
+      },
+      "electricity_next_change": {
+        "name": "下次切换"
+      },
+      "electricity_next_price": {
+        "name": "下一时段电价"
+      },
+      "tempo_today": {
+        "name": "今日 Tempo",
+        "state": {
+          "blue": "蓝色",
+          "white": "白色",
+          "red": "红色",
+          "unknown": "未知"
+        }
+      },
+      "tempo_tomorrow": {
+        "name": "明日 Tempo",
+        "state": {
+          "blue": "蓝色",
+          "white": "白色",
+          "red": "红色",
+          "unknown": "未知"
+        }
       }
     },
     "binary_sensor": {
@@ -335,6 +403,22 @@
       }
     }
   },
+  "device": {
+    "electricity": {
+      "name": "ioDek 电力"
+    }
+  },
+  "device_automation": {
+    "trigger_type": {
+      "charge_started": "开始充电",
+      "charge_complete": "充电完成",
+      "charge_stopped": "充电中断",
+      "battery_low": "电量低于提醒阈值",
+      "sentry_alert": "哨兵模式警报",
+      "parked": "车辆已停车",
+      "charge_limit_set": "已应用地点充电上限"
+    }
+  },
   "services": {
     "refresh": {
       "name": "刷新",
@@ -362,6 +446,9 @@
     },
     "update_failed": {
       "message": "无法连接 ioDek（{error}）。"
+    },
+    "energy_unsupported": {
+      "message": "此 ioDek 暂不提供电力数据。"
     },
     "vehicle_asleep": {
       "message": "车辆处于休眠状态。请先按“唤醒”（每小时 3 次）。"

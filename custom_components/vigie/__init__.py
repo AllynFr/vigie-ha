@@ -17,6 +17,7 @@ import voluptuous as vol
 from .api import VigieAuthError, VigieClient, VigieError
 from .bridge import DashboardBridge, exposed_entities
 from .const import (
+    ABILITY_HOME,
     ABILITY_SIGNAL,
     CONF_ABILITIES,
     CONF_LOCATION_ENTITY,
@@ -28,7 +29,7 @@ from .const import (
     OPTION_FOR_ABILITY,
     SERVICE_REFRESH,
 )
-from .coordinator import VigieCoordinator
+from .coordinator import VigieCoordinator, VigieEnergyCoordinator
 from .entity import vehicle_key
 from .location import LocationReporter
 
@@ -64,6 +65,7 @@ class VigieRuntimeData:
     signal_buttons: bool = False
     location: LocationReporter | None = None
     bridge: DashboardBridge | None = None
+    energy: VigieEnergyCoordinator | None = None
 
     def can(self, coordinator: VigieCoordinator, ability: str) -> bool:
         """A control exists only if the key has the ability AND the car option is on."""
@@ -134,12 +136,17 @@ async def async_setup_entry(hass: HomeAssistant, entry: VigieConfigEntry) -> boo
     if missing:
         _LOGGER.warning("Vehicles %s are no longer visible with this API key", sorted(missing))
 
+    # Electricity of the account: a failure here never blocks the cars.
+    energy = VigieEnergyCoordinator(hass, entry, client)
+    await energy.async_refresh()
+
     entry.runtime_data = VigieRuntimeData(
         client=client,
         coordinators=coordinators,
         abilities=abilities,
         abilities_known=known,
         signal_buttons=bool(entry.options.get(CONF_SIGNAL_BUTTONS, False)),
+        energy=energy,
     )
     entry.async_on_unload(entry.add_update_listener(_async_options_updated))
     await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
@@ -151,8 +158,10 @@ async def async_setup_entry(hass: HomeAssistant, entry: VigieConfigEntry) -> boo
         entry.async_on_unload(reporter.async_stop)
         reporter.async_start()
 
-    # Dashboard buttons: nothing is exposed to ioDek without an explicit choice.
-    if exposed := exposed_entities(entry.options):
+    # Dashboard buttons: nothing is exposed to ioDek without an explicit choice. The same channel carries
+    # the car events (vigie_event): opened as well with no exposed entity when the key has the ability.
+    exposed = exposed_entities(entry.options)
+    if exposed or ABILITY_HOME in abilities:
         bridge = DashboardBridge(hass, entry, client, exposed)
         entry.runtime_data.bridge = bridge
         entry.async_on_unload(bridge.async_stop)

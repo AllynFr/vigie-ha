@@ -19,7 +19,10 @@ Un appareil par voiture, avec :
 - **Navigation** (option Localisation) : distance restante, arrivée prévue, batterie à l'arrivée, quand une destination est saisie dans le GPS de la voiture.
 - **Voiture** : kilométrage, températures intérieure et extérieure, pression des quatre pneus, verrouillage, portes, coffres, vitres, Sentinelle, climatisation, dernière réception, en ligne ou endormie.
 - **Position** (`device_tracker`) si l'option Localisation est active sur la voiture dans ioDek.
+- **Plan de charge** du planificateur d'ioDek : statut, début et fin prévus, pourcentage visé, raison (minimum du jour, agenda, trajet prévu).
 - **Commandes**, selon les droits de la clé et les options de la voiture : charge marche/arrêt, limite de charge, intensité, climatisation et consigne, verrouillage, coffres, Sentinelle, sièges et volant chauffants, réveil, klaxon et appel de phares.
+
+Et un appareil **ioDek Électricité** pour le compte : prix du kWh en cours, période (base, heures pleines, heures creuses, gratuit), prochain changement et prix suivant, couleur Tempo du jour et du lendemain.
 
 Tesla n'envoie une valeur que lorsqu'elle change. Une entité apparaît donc dès que la voiture a transmis la donnée correspondante, parfois quelques jours après l'installation.
 
@@ -88,12 +91,96 @@ Domaines et services permis (liste fermée, vérifiée par ioDek et par l'intég
 - Sans le droit **domotique**, ou si votre formule ioDek ne comprend pas l'API, l'intégration arrête le pont et le signale dans **Réparations**, jusqu'au prochain changement d'options ou redémarrage.
 - Vider la liste retire les boutons côté ioDek.
 
+## Électricité et plan de charge
+
+L'appareil **ioDek Électricité** reprend le tarif saisi dans ioDek (Compte → Électricité, lieux de recharge) : celui du domicile du conducteur s'il en a un, sinon du lieu par défaut. Lu toutes les 5 minutes.
+
+| Entité | Unité ou valeurs |
+|---|---|
+| `sensor.iodek_electricite_prix_en_cours` | EUR/kWh ; attributs `tariff`, `period`, `tempo_color`, `place`, `place_source` |
+| `sensor.iodek_electricite_periode` | `base`, `peak` (heures pleines), `offpeak` (heures creuses), `free` |
+| `sensor.iodek_electricite_prochain_changement` | horodatage ; attributs `period`, `tempo_color` |
+| `sensor.iodek_electricite_prix_suivant` | EUR/kWh |
+| `sensor.iodek_electricite_tempo_aujourd_hui`, `…_tempo_demain` | `blue`, `white`, `red`, `unknown` (couleur du lendemain publiée vers 10 h 40) |
+
+Sur chaque voiture, le **plan de charge** en cours ou à venir : `…_plan_de_charge` (statut : `planned`, `unplugged`, `running`, `done`, `none`, `nodata`, `unmanaged`, `away`, `failed`, ou `no_plan`), `…_debut_de_charge_prevu` et `…_fin_de_charge_prevue` (horodatages), `…_pourcentage_vise` (%), `…_raison_du_plan` (`minimum`, `calendar`, `trip`). Lu avec le reste quand le planificateur est actif, toutes les 15 minutes sinon. Les identifiants d'entités dépendent de la langue de Home Assistant à l'installation.
+
+## Événements pour les automatisations
+
+ioDek prévient Home Assistant dès qu'un événement arrive sur la voiture, par le même canal que les boutons (WebSocket sortant, rien à ouvrir). La clé doit avoir le droit **domotique** en plus de **lecture** ; aucune entité n'a besoin d'être exposée.
+
+Chaque événement déclenche un événement Home Assistant `vigie_event`, et existe aussi comme **déclencheur d'appareil** sur la voiture (éditeur d'automatisations → Appareil → la voiture) :
+
+| `type` | Quand | Données utiles |
+|---|---|---|
+| `charge_started` | charge commencée | `soc` |
+| `charge_complete` | charge terminée | `soc` |
+| `charge_stopped` | charge interrompue (pas à la limite) | `soc`, `reason` (`stopped`, `no_power`) |
+| `battery_low` | batterie sous votre seuil d'alerte (ioDek → Compte → Alertes) | `soc`, `threshold` |
+| `sentry_alert` | alarme Sentinelle | `level` (`aware` : présence, `panic` : alarme) |
+| `parked` | voiture garée | `soc`, `place`, `at_home` (option Localisation) |
+| `charge_limit_set` | limite de charge du lieu appliquée | `limit`, `place` |
+
+Toujours présents : `vehicle_id`, `vehicle_name`, `at` (UTC), `device_id` (l'appareil de la voiture). `location` (`lat`, `lon`) pour `parked` et `sentry_alert` seulement si l'option Localisation est active et si la clé a le droit **position**. Le VIN n'est jamais envoyé. Un événement vieux de plus de 15 minutes n'est pas transmis.
+
+Alarme Sentinelle → allumer une lumière :
+
+```yaml
+automation:
+  - alias: "Tesla : alarme Sentinelle"
+    triggers:
+      - trigger: event
+        event_type: vigie_event
+        event_data:
+          type: sentry_alert
+          level: panic
+    actions:
+      - action: light.turn_on
+        target:
+          entity_id: light.allee
+        data:
+          flash: long
+```
+
+Heures creuses → lancer le chauffe-eau :
+
+```yaml
+automation:
+  - alias: "Chauffe-eau en heures creuses"
+    triggers:
+      - trigger: state
+        entity_id: sensor.iodek_electricite_periode
+        to: offpeak
+    actions:
+      - action: switch.turn_on
+        target:
+          entity_id: switch.chauffe_eau
+  - alias: "Chauffe-eau coupé en heures pleines"
+    triggers:
+      - trigger: state
+        entity_id: sensor.iodek_electricite_periode
+        to: peak
+    conditions:
+      # Pas de chauffe un jour rouge Tempo.
+      - condition: not
+        conditions:
+          - condition: state
+            entity_id: sensor.iodek_electricite_tempo_aujourd_hui
+            state: red
+    actions:
+      - action: switch.turn_off
+        target:
+          entity_id: switch.chauffe_eau
+```
+
+Pour cibler une voiture précise avec `vigie_event`, ajoutez `device_id` (ou `vehicle_id`) dans `event_data`, ou utilisez le déclencheur d'appareil.
+
 ## Coûts et limites
 
 - Les lectures viennent de la base d'ioDek et ne coûtent rien. Elles ne réveillent pas la voiture.
 - Commandes et réveils consomment des crédits ioDek.
 - Une commande ne réveille jamais la voiture : si elle dort, Home Assistant affiche l'erreur et il faut appuyer sur **Réveiller** (3 réveils par heure et par voiture).
-- Limites de l'API : 60 lectures et 10 commandes par minute et par clé.
+- Limites de l'API : 60 lectures et 10 commandes par minute et par clé. L'électricité ajoute une lecture toutes les 5 minutes, le plan de charge une par voiture et par actualisation quand le planificateur est actif. Les événements arrivent par le WebSocket, sans lecture.
 
 ## Service
 
@@ -124,6 +211,10 @@ Tesla sends a field only when it changes, so some entities appear once the car h
 **Position for away mode**: in the options, pick a `person` or `device_tracker` entity (empty by default, nothing sent). Its position goes to ioDek so scheduled climate can skip when you are far from the car: on the first known position, after a move of more than 200 m (at most once a minute), and every 3 h otherwise. The key needs the **position** permission. ioDek keeps only the last position, fresh for 6 h and deleted after 24 h.
 
 **Dashboard buttons**: ioDek's dashboard can show buttons that operate Home Assistant entities (open the gate, run a script, turn on a light). Add the **domotique** (home automation) permission to the key in ioDek, then pick the entities in the integration options (empty by default: nothing exposed). Nothing has to be opened to the Internet: Home Assistant connects out to ioDek over a WebSocket and receives the orders; ioDek holds no Home Assistant token. Allowed domains and services (closed list, checked on both sides): `script`/`scene` `turn_on`; `button`/`input_button` `press`; `automation` `trigger`; `switch`/`input_boolean`/`light`/`fan` `toggle`, `turn_on`, `turn_off`; `cover` `toggle`, `open_cover`, `close_cover`, `stop_cover`; `lock` `lock`, `unlock`. ioDek asks for a confirmation before operating a lock, a cover or a gate. The integration runs only exposed entities and listed services, whatever it is asked, ignores expired or duplicate orders and reports each outcome to ioDek. Without the permission (or the plan), the bridge stops and a Repairs issue explains why.
+
+**Electricity and charge plan** (0.5.0): an **ioDek Electricity** device per account with the current price (EUR/kWh, attributes tariff, period, place), period (`base`, `peak`, `offpeak`, `free`), next change (timestamp) and next price, Tempo colour of today and tomorrow (`blue`, `white`, `red`, `unknown`); read every 5 minutes. Each car gets its charge plan: status, planned start and end (timestamps), target (%), reason (`minimum`, `calendar`, `trip`).
+
+**Events for automations** (0.5.0): with the **domotique** and **lecture** permissions, ioDek pushes the car's events over the same outgoing WebSocket. Each one fires a `vigie_event` event (`type`, `vehicle_id`, `vehicle_name`, `at`, `device_id`, plus `soc`, `reason`, `threshold`, `level`, `place`, `at_home`, `limit` as relevant; `location` only with the Location option and the **position** permission; never the VIN) and is available as a device trigger on the car: `charge_started`, `charge_complete`, `charge_stopped`, `battery_low` (your alert threshold in ioDek), `sentry_alert` (`aware` or `panic`), `parked`, `charge_limit_set`. See the French section above for YAML examples (Sentry alarm → light, off-peak hours → water heater).
 
 **Costs**: reads are free and never wake the car. Commands and wake-ups use ioDek credits. Commands never wake the car; press **Wake up** first (3 per hour). API limits: 60 reads and 10 commands per minute per key.
 

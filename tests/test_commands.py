@@ -9,7 +9,7 @@ from homeassistant.exceptions import HomeAssistantError, ServiceValidationError
 from homeassistant.helpers import entity_registry as er
 import pytest
 
-from .conftest import API, FakeVigie, make_entry
+from .conftest import API, FakeVigie, make_entry, unique_key as _key
 
 ALL = ["lecture", "charge", "confort", "acces"]
 
@@ -20,7 +20,7 @@ async def _setup(hass: HomeAssistant, vigie: FakeVigie, signal: bool = False) ->
     assert await hass.config_entries.async_setup(entry.entry_id)
     await hass.async_block_till_done()
     registry = er.async_get(hass)
-    return {e.unique_id.split("_1_", 1)[1]: e.entity_id for e in er.async_entries_for_config_entry(registry, entry.entry_id)}
+    return {_key(e.unique_id): e.entity_id for e in er.async_entries_for_config_entry(registry, entry.entry_id)}
 
 
 def _ok(vigie: FakeVigie, command: str) -> None:

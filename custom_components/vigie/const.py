@@ -27,6 +27,10 @@ MAX_SCAN_INTERVAL: Final = 300
 # Battery health changes at most daily; charge history a few times a day.
 BATTERY_REFRESH: Final = timedelta(hours=1)
 CHARGES_REFRESH: Final = timedelta(minutes=15)
+# Electricity of the account (tariff, period, Tempo): one read every 5 minutes per key.
+ENERGY_REFRESH: Final = timedelta(minutes=5)
+# Charge plan: read with the state while ioDek's planner is on, every 15 min otherwise.
+PLAN_IDLE_REFRESH: Final = timedelta(minutes=15)
 
 # Key abilities (names used by the Vigie API).
 ABILITY_READ: Final = "lecture"
@@ -34,6 +38,7 @@ ABILITY_CHARGE: Final = "charge"
 ABILITY_COMFORT: Final = "confort"
 ABILITY_ACCESS: Final = "acces"
 ABILITY_SIGNAL: Final = "signal"
+ABILITY_HOME: Final = "domotique"
 COMMAND_ABILITIES: Final = (ABILITY_CHARGE, ABILITY_COMFORT, ABILITY_ACCESS, ABILITY_SIGNAL)
 
 # Car option (vehicle.options) required by each ability.
@@ -107,3 +112,50 @@ BRIDGE_PUBLISH_RETRY_DELAYS: Final = (60, 120, 300, 600, 1800)
 BRIDGE_NO_SOCKET_RETRY: Final = 300
 # Action ids remembered so that one order is run once only.
 BRIDGE_SEEN_ACTIONS: Final = 200
+
+# Car events pushed by ioDek on the bridge channel, fired in Home Assistant as `vigie_event`.
+BRIDGE_EVENT: Final = "iodek.event"
+EVENT_VIGIE: Final = "vigie_event"
+EVENT_TYPES: Final = (
+    "charge_started",
+    "charge_complete",
+    "charge_stopped",
+    "battery_low",
+    "sentry_alert",
+    "parked",
+    "charge_limit_set",
+)
+# Fields of an ioDek event kept in the Home Assistant event (anything else is dropped).
+EVENT_FIELDS: Final = (
+    "type",
+    "vehicle_id",
+    "vehicle_name",
+    "at",
+    "soc",
+    "reason",
+    "threshold",
+    "level",
+    "limit",
+    "place",
+    "at_home",
+    "location",
+)
+# Events after which the car's data is read again at once (free).
+EVENT_REFRESH_TYPES: Final = ("charge_started", "charge_complete", "charge_stopped", "parked", "charge_limit_set")
+
+# Electricity sensors (account device).
+ENERGY_PERIODS: Final = ["base", "peak", "offpeak", "free"]
+TEMPO_COLORS: Final = ["blue", "white", "red", "unknown"]
+PLAN_STATUSES: Final = [
+    "planned",
+    "unplugged",
+    "running",
+    "done",
+    "none",
+    "nodata",
+    "unmanaged",
+    "away",
+    "failed",
+    "no_plan",
+]
+PLAN_REASONS: Final = ["minimum", "calendar", "trip"]

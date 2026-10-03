@@ -190,6 +190,74 @@
       },
       "last_seen": {
         "name": "Dernière réception"
+      },
+      "charge_plan_status": {
+        "name": "Plan de charge",
+        "state": {
+          "planned": "Planifiée",
+          "unplugged": "Planifiée, voiture débranchée",
+          "running": "En cours",
+          "done": "Terminée",
+          "none": "Rien à charger",
+          "nodata": "Niveau de batterie inconnu",
+          "unmanaged": "Lieu non piloté",
+          "away": "Hors des lieux de recharge",
+          "failed": "Échec",
+          "no_plan": "Aucun plan"
+        }
+      },
+      "charge_plan_start": {
+        "name": "Début de charge prévu"
+      },
+      "charge_plan_end": {
+        "name": "Fin de charge prévue"
+      },
+      "charge_plan_target": {
+        "name": "Pourcentage visé"
+      },
+      "charge_plan_reason": {
+        "name": "Raison du plan",
+        "state": {
+          "minimum": "Minimum du jour",
+          "calendar": "Agenda",
+          "trip": "Trajet prévu"
+        }
+      },
+      "electricity_price": {
+        "name": "Prix en cours"
+      },
+      "electricity_period": {
+        "name": "Période",
+        "state": {
+          "base": "Base",
+          "peak": "Heures pleines",
+          "offpeak": "Heures creuses",
+          "free": "Gratuit"
+        }
+      },
+      "electricity_next_change": {
+        "name": "Prochain changement"
+      },
+      "electricity_next_price": {
+        "name": "Prix suivant"
+      },
+      "tempo_today": {
+        "name": "Tempo aujourd'hui",
+        "state": {
+          "blue": "Bleu",
+          "white": "Blanc",
+          "red": "Rouge",
+          "unknown": "Inconnue"
+        }
+      },
+      "tempo_tomorrow": {
+        "name": "Tempo demain",
+        "state": {
+          "blue": "Bleu",
+          "white": "Blanc",
+          "red": "Rouge",
+          "unknown": "Inconnue"
+        }
       }
     },
     "binary_sensor": {
@@ -335,6 +403,22 @@
       }
     }
   },
+  "device": {
+    "electricity": {
+      "name": "ioDek Électricité"
+    }
+  },
+  "device_automation": {
+    "trigger_type": {
+      "charge_started": "Charge commencée",
+      "charge_complete": "Charge terminée",
+      "charge_stopped": "Charge interrompue",
+      "battery_low": "Batterie sous le seuil d'alerte",
+      "sentry_alert": "Alarme Sentinelle",
+      "parked": "Voiture garée",
+      "charge_limit_set": "Limite de charge du lieu appliquée"
+    }
+  },
   "services": {
     "refresh": {
       "name": "Actualiser",
@@ -362,6 +446,9 @@
     },
     "update_failed": {
       "message": "ioDek est injoignable ({error})."
+    },
+    "energy_unsupported": {
+      "message": "Cet ioDek ne fournit pas encore les données d'électricité."
     },
     "vehicle_asleep": {
       "message": "La voiture dort. Appuyez d'abord sur Réveiller (3 par heure)."
