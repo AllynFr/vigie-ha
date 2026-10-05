@@ -307,6 +307,14 @@
     "device_tracker": {
       "location": {
         "name": "位置"
+      },
+      "destination": {
+        "name": "目的地",
+        "state_attributes": {
+          "destination_name": {
+            "name": "目的地名称"
+          }
+        }
       }
     },
     "switch": {

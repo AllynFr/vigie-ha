@@ -307,6 +307,14 @@
     "device_tracker": {
       "location": {
         "name": "Position"
+      },
+      "destination": {
+        "name": "Destination",
+        "state_attributes": {
+          "destination_name": {
+            "name": "Nom de la destination"
+          }
+        }
       }
     },
     "switch": {

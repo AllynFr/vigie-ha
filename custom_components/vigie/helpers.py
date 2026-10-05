@@ -103,8 +103,16 @@ def sentry_on(data: VigieData) -> bool | None:
     return state != "Off"
 
 
-def location(data: VigieData) -> tuple[float, float] | None:
-    raw = data.value("Location")
+def location(data: VigieData, field: str = "Location") -> tuple[float, float] | None:
+    raw = data.value(field)
     if isinstance(raw, dict) and raw.get("lat") is not None and raw.get("lon") is not None:
         return float(raw["lat"]), float(raw["lon"])
     return None
+
+
+def destination(data: VigieData) -> tuple[float, float] | None:
+    """Destination of the navigation in progress, None when the car is not navigating."""
+    nav = data.state.get("navigation") or {}
+    if nav.get("arrival") is None:
+        return None
+    return location(data, "DestinationLocation")

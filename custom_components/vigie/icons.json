@@ -71,7 +71,8 @@
       "seat_heater_rear_right": { "default": "mdi:car-seat-heater" }
     },
     "device_tracker": {
-      "location": { "default": "mdi:car" }
+      "location": { "default": "mdi:car" },
+      "destination": { "default": "mdi:map-marker-path" }
     }
   },
   "services": {

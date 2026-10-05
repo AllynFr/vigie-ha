@@ -354,12 +354,43 @@ async def test_charge_eta_and_navigation_sensors(hass: HomeAssistant, vigie: Fak
     assert _state(hass, entry, "nav_battery_at_arrival").state == "32"
 
 
+async def test_destination_tracker(hass: HomeAssistant, vigie: FakeVigie, freezer: FrozenDateTimeFactory) -> None:
+    vigie.state["values"]["DestinationLocation"] = {
+        "value": {"lat": 43.2197, "lon": 0.0418},
+        "unit": None,
+        "received_at": "2026-09-29T12:00:00Z",
+        "age_s": 60,
+    }
+    vigie.state["values"]["DestinationName"] = {
+        "value": "Travail",
+        "unit": None,
+        "received_at": "2026-09-29T12:00:00Z",
+        "age_s": 60,
+    }
+    vigie.register()
+    entry = await _setup(hass)
+    # Last destination still reported by the car, but no navigation in progress.
+    assert _state(hass, entry, "destination").state == STATE_UNAVAILABLE
+
+    vigie.state["navigation"] = {"minutes_to_arrival": 41, "arrival": "2026-09-29T13:01:00Z", "distance_km": 32.2}
+    vigie.register()
+    freezer.tick(timedelta(seconds=61))
+    async_fire_time_changed(hass)
+    await hass.async_block_till_done()
+
+    dest = _state(hass, entry, "destination")
+    assert dest.attributes["latitude"] == 43.2197
+    assert dest.attributes["longitude"] == 0.0418
+    assert dest.attributes["destination_name"] == "Travail"
+
+
 async def test_navigation_sensors_need_location(hass: HomeAssistant, vigie: FakeVigie) -> None:
     vigie.set_options(location=False)
     del vigie.state["values"]["Location"]
     vigie.register()
     entry = await _setup(hass)
     assert "nav_arrival" not in _entities(hass, entry)
+    assert "destination" not in _entities(hass, entry)
     assert "charge_time_remaining" in _entities(hass, entry)
 
 
